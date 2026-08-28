@@ -10,6 +10,11 @@ env/
 venv/
 ENV/
 
+# Node / Frontend builds
+node_modules/
+dist/
+.vite/
+
 # Temporary & Log files
 *.log
 .pytest_cache/
