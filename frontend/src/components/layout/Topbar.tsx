@@ -1,5 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import LanguageSwitcher from './LanguageSwitcher';
 
 interface TopbarProps {
   isOffline: boolean;
@@ -18,14 +19,10 @@ export default function Topbar({
   onToggleDesktopSidebar,
   isSidebarCollapsed,
 }: TopbarProps) {
-  const { t, i18n } = useTranslation();
-
-  const changeLanguage = (lang: string) => {
-    i18n.changeLanguage(lang);
-  };
+  const { t } = useTranslation();
 
   return (
-    <header className="h-14 bg-[#101014]/90 backdrop-blur-xl border-b border-white/[0.06] px-4 sm:px-6 flex items-center justify-between select-none z-20">
+    <header className="h-14 bg-[#101014]/90 backdrop-blur-xl border-b border-white/[0.06] px-4 sm:px-6 flex items-center justify-between select-none z-30 flex-shrink-0">
       {/* Brand Identity & Sidebar Toggle */}
       <div className="flex items-center gap-3">
         {/* Mobile Hamburger Button */}
@@ -62,7 +59,7 @@ export default function Topbar({
         </div>
       </div>
 
-      {/* Right: Live Status & Controls */}
+      {/* Right: Live Status, Language Switcher, & Controls */}
       <div className="flex items-center gap-2.5">
         {/* Live / Offline Status Badge */}
         <div className="flex items-center gap-2 text-[11px] bg-white/[0.04] border border-white/[0.08] px-2.5 sm:px-3 py-1 rounded-lg shadow-sm">
@@ -81,29 +78,15 @@ export default function Topbar({
           )}
         </div>
 
-        {/* Language Selector */}
-        <div className="flex items-center bg-white/[0.04] border border-white/[0.08] text-[11px] rounded-lg p-0.5 font-medium">
-          {(['en', 'hi', 'mr'] as const).map((lang) => (
-            <button
-              key={lang}
-              onClick={() => changeLanguage(lang)}
-              className={`px-2 py-0.5 rounded-md transition-all ${
-                i18n.language === lang
-                  ? 'bg-white/[0.12] text-white font-bold border border-white/[0.15] shadow-sm'
-                  : 'text-[#777777] hover:text-[#CCCCCC]'
-              }`}
-            >
-              {lang.toUpperCase()}
-            </button>
-          ))}
-        </div>
+        {/* 37-Language Switcher Dropdown */}
+        <LanguageSwitcher />
 
-        {/* AI Chatbot Button */}
+        {/* AI Chatbot Trigger Button */}
         <button
           onClick={onOpenChat}
-          className="bg-white/[0.08] hover:bg-white/[0.14] border border-white/[0.15] text-[#EFEFEF] px-3 py-1 rounded-lg text-[12px] font-semibold flex items-center gap-1.5 transition-all shadow-sm hover:scale-[1.02]"
+          className="bg-white/[0.08] hover:bg-white/[0.14] border border-white/[0.15] text-[#EFEFEF] px-3 py-1.5 rounded-xl text-[12px] font-semibold flex items-center gap-1.5 transition-all shadow-sm hover:scale-[1.02] active:scale-95"
         >
-          <span className="w-1.5 h-1.5 rounded-full bg-[#4F9067]"></span>
+          <span className="w-1.5 h-1.5 rounded-full bg-[#4F9067] animate-pulse"></span>
           <span className="hidden sm:inline">{t('nav.chatbot')}</span>
           <span className="sm:hidden">AI</span>
         </button>

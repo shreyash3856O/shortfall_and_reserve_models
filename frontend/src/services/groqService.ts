@@ -1,3 +1,5 @@
+import { getLanguageConfig } from '../i18n/languages';
+
 export interface MessageRole {
   role: 'user' | 'assistant' | 'system';
   content: string;
@@ -70,7 +72,7 @@ export class GroqService {
       (typeof import.meta !== 'undefined' && import.meta.env?.VITE_GROQ_BASE_URL) ||
       'https://api.groq.com/openai/v1';
 
-    if (typeof localStorage !== 'undefined' && !localStorage.getItem('midas_groq_api_key')) {
+    if (typeof localStorage !== 'undefined' && !localStorage.getItem('midas_groq_api_key') && this.apiKey) {
       localStorage.setItem('midas_groq_api_key', this.apiKey);
     }
   }
@@ -99,8 +101,17 @@ export class GroqService {
     return this.model;
   }
 
-  // Build mining-specific system prompt grounded in live MOIL telemetry
-  private buildSystemPrompt(miningContext: MiningData): string {
+  // Build mining-specific system prompt grounded in live MOIL telemetry & targeted multilingual instruction
+  private buildSystemPrompt(miningContext: MiningData, languageCode: string = 'en'): string {
+    const langConfig = getLanguageConfig(languageCode);
+    const isNonEnglish = languageCode !== 'en';
+
+    const langInstruction = isNonEnglish
+      ? `\n\nLANGUAGE DIRECTIVE:
+You MUST respond in ${langConfig.name} (${langConfig.nameEn}, script: ${langConfig.script}).
+Provide fluent, idiomatic, and grammatically accurate translations into ${langConfig.name}. Maintain standard mining terminology (जैसे कि अयस्क ग्रेड, उत्पादन घाटा, टनभार, ड्रिलिंग, ब्लास्टिंग) in ${langConfig.name}.`
+      : '';
+
     return `You are MIDAS AI Assistant, an expert mining operations intelligence system for MOIL Limited manganese mining operations.
 
 CURRENT MINING CONTEXT:
@@ -136,7 +147,7 @@ RESPONSE GUIDELINES:
 - Be concise, professional, and actionable (mining operations require clear decisions).
 - Highlight critical risks with exact numbers (e.g. Balaghat MN01 at 100% risk due to 10.5h breakdown).
 - Back up recommendations with tonnage recovery impact (e.g. "+350 T/day").
-- Format key metrics clearly with bold highlights.`;
+- Format key metrics clearly with markdown highlights.${langInstruction}`;
   }
 
   // Fetch real-time mining data from MIDAS backend
@@ -190,7 +201,7 @@ RESPONSE GUIDELINES:
     });
 
     const miningContext = await this.getMiningContext();
-    const systemPrompt = this.buildSystemPrompt(miningContext);
+    const systemPrompt = this.buildSystemPrompt(miningContext, language);
 
     // If Groq API key is available, query Groq
     if (this.apiKey) {
