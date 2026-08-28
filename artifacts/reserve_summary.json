@@ -1,0 +1,38 @@
+[
+  {
+    "zone":"RED (Low <32% Mn)",
+    "zone_id":0,
+    "grid_cells":8621,
+    "area_km2":0.8444,
+    "tonnage_mt":16.803,
+    "mean_grade_mn_pct":25.23,
+    "mean_thickness_m":5.53
+  },
+  {
+    "zone":"YELLOW (Medium 32-38% Mn)",
+    "zone_id":1,
+    "grid_cells":1376,
+    "area_km2":0.1348,
+    "tonnage_mt":4.766,
+    "mean_grade_mn_pct":33.98,
+    "mean_thickness_m":9.82
+  },
+  {
+    "zone":"GREEN (High >=38% Mn)",
+    "zone_id":2,
+    "grid_cells":3,
+    "area_km2":0.0003,
+    "tonnage_mt":0.015,
+    "mean_grade_mn_pct":38.2,
+    "mean_thickness_m":14.33
+  },
+  {
+    "zone":"TOTAL ORE (cutoff >=32% Mn)",
+    "zone_id":-1,
+    "grid_cells":1379,
+    "area_km2":0.1351,
+    "tonnage_mt":4.781,
+    "mean_grade_mn_pct":33.99,
+    "mean_thickness_m":9.83
+  }
+]

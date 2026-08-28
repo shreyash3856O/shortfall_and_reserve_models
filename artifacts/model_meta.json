@@ -1,0 +1,23 @@
+{
+  "model_type": "xgboost.XGBClassifier",
+  "objective": "binary:logistic",
+  "feature_order": [
+    "daily_production",
+    "equipment_downtime_hrs",
+    "rainfall_mm",
+    "blasting_delay_days",
+    "target_tonnes",
+    "workers_present"
+  ],
+  "n_features": 6,
+  "scale_pos_weight": 1.2174,
+  "decision_threshold": 0.08,
+  "class_distribution": {
+    "normal": 659,
+    "shortfall": 541
+  },
+  "shortfall_rate_pct": 45.08,
+  "rows": 1200,
+  "trained_at": "2026-08-28T12:12:59.586711+00:00",
+  "seed": 42
+}
