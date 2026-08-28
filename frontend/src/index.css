@@ -9,7 +9,7 @@
   body {
     margin: 0;
     padding: 0;
-    background-color: #0D0D10;
+    background-color: #0B0B0E;
     color: #EFEFEF;
     font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     -webkit-font-smoothing: antialiased;
@@ -18,206 +18,151 @@
   }
 }
 
-/* ─── Keyframes ─────────────────────────────────────────────── */
+/* Glass Tile Effect Utility */
+.glass-tile {
+  background: rgba(20, 20, 26, 0.65);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-tile:hover {
+  background: rgba(26, 26, 34, 0.8);
+  border-color: rgba(255, 255, 255, 0.14);
+  transform: translateY(-2px);
+  box-shadow: 0 16px 36px -10px rgba(0, 0, 0, 0.7);
+}
+
+.glass-tile-static {
+  background: rgba(20, 20, 26, 0.65);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+}
+
+/* Custom silky smooth keyframes & animations */
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(14px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-@keyframes fadeInDown {
-  from { opacity: 0; transform: translateY(-12px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes fadeInScale {
-  from { opacity: 0; transform: scale(0.94) translateY(8px); }
-  to   { opacity: 1; transform: scale(1) translateY(0); }
-}
-
-@keyframes slideInRight {
-  from { opacity: 0; transform: translateX(24px); }
-  to   { opacity: 1; transform: translateX(0); }
+@keyframes scaleUp {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1.0);
+  }
 }
 
 @keyframes floatGentle {
-  0%, 100% { transform: translateY(0px); }
-  50%       { transform: translateY(-5px); }
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
 }
 
 @keyframes shimmerGlow {
-  0%   { background-position: -200% 0; }
-  100% { background-position:  200% 0; }
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
 }
 
-@keyframes pulseRing {
-  0%   { transform: scale(0.9); opacity: 0.8; }
-  70%  { transform: scale(1.4); opacity: 0; }
-  100% { transform: scale(1.4); opacity: 0; }
+.animate-fade-in {
+  animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-@keyframes rotateSlow {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
+.animate-fade-in-up {
+  animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-@keyframes countUp {
-  from { opacity: 0; transform: translateY(6px); }
-  to   { opacity: 1; transform: translateY(0); }
+.animate-pop-up {
+  animation: scaleUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-@keyframes borderGlow {
-  0%, 100% { border-color: rgba(79, 144, 103, 0.15); }
-  50%       { border-color: rgba(79, 144, 103, 0.45); }
+.animate-float {
+  animation: floatGentle 4s ease-in-out infinite;
 }
-
-@keyframes scanline {
-  0%   { transform: translateY(-100%); }
-  100% { transform: translateY(100vh); }
-}
-
-/* ─── Animation Utilities ────────────────────────────────────── */
-.animate-fade-in       { animation: fadeIn       0.40s cubic-bezier(0.16, 1, 0.3, 1) both; }
-.animate-fade-in-up    { animation: fadeInUp     0.50s cubic-bezier(0.16, 1, 0.3, 1) both; }
-.animate-fade-in-down  { animation: fadeInDown   0.45s cubic-bezier(0.16, 1, 0.3, 1) both; }
-.animate-fade-in-scale { animation: fadeInScale  0.55s cubic-bezier(0.16, 1, 0.3, 1) both; }
-.animate-slide-right   { animation: slideInRight 0.45s cubic-bezier(0.16, 1, 0.3, 1) both; }
-.animate-float         { animation: floatGentle  4.5s ease-in-out infinite; }
-.animate-rotate-slow   { animation: rotateSlow   12s linear infinite; }
-.animate-border-glow   { animation: borderGlow   3s ease-in-out infinite; }
-.animate-count-up      { animation: countUp      0.6s cubic-bezier(0.16, 1, 0.3, 1) both; }
 
 .animate-shimmer {
-  background: linear-gradient(90deg, #18181C 25%, #23232B 50%, #18181C 75%);
+  background: linear-gradient(90deg, #16161C 25%, #242430 50%, #16161C 75%);
   background-size: 200% 100%;
   animation: shimmerGlow 1.8s infinite;
 }
 
-/* ─── Stagger delays ─────────────────────────────────────────── */
-.stagger-1  { animation-delay:  50ms; }
-.stagger-2  { animation-delay: 100ms; }
-.stagger-3  { animation-delay: 160ms; }
-.stagger-4  { animation-delay: 220ms; }
-.stagger-5  { animation-delay: 280ms; }
-.stagger-6  { animation-delay: 340ms; }
-.stagger-7  { animation-delay: 400ms; }
-.stagger-8  { animation-delay: 460ms; }
+/* Stagger delay utilities */
+.stagger-1 { animation-delay: 50ms; }
+.stagger-2 { animation-delay: 100ms; }
+.stagger-3 { animation-delay: 150ms; }
+.stagger-4 { animation-delay: 200ms; }
+.stagger-5 { animation-delay: 250ms; }
+.stagger-6 { animation-delay: 300ms; }
 
-/* ─── Glass / Transparent Tile ───────────────────────────────── */
-.glass-tile {
-  background: linear-gradient(135deg, rgba(26,26,32,0.75) 0%, rgba(18,18,22,0.85) 100%);
-  backdrop-filter: blur(16px) saturate(140%);
-  -webkit-backdrop-filter: blur(16px) saturate(140%);
-  border: 1px solid rgba(255, 255, 255, 0.055);
-  box-shadow:
-    0 4px 24px -4px rgba(0,0,0,0.5),
-    inset 0 1px 0 rgba(255,255,255,0.04);
+/* Slim graphite scrollbar */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
 }
 
-.glass-tile-hover {
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.glass-tile-hover:hover {
-  background: linear-gradient(135deg, rgba(30,30,38,0.82) 0%, rgba(22,22,28,0.9) 100%);
-  border-color: rgba(255,255,255,0.09);
-  box-shadow:
-    0 8px 32px -6px rgba(0,0,0,0.55),
-    inset 0 1px 0 rgba(255,255,255,0.06);
-  transform: translateY(-1px);
+::-webkit-scrollbar-track {
+  background: #0B0B0E;
 }
 
-/* Subtle green glow variant */
-.glass-tile-accent:hover {
-  border-color: rgba(79, 144, 103, 0.28) !important;
-  box-shadow:
-    0 8px 32px -6px rgba(0,0,0,0.55),
-    0 0 0 1px rgba(79,144,103,0.12),
-    inset 0 1px 0 rgba(255,255,255,0.04);
+::-webkit-scrollbar-thumb {
+  background: #24242E;
+  border-radius: 4px;
 }
 
-/* ─── Modal / Popup Overlay ─────────────────────────────────── */
-.modal-overlay {
-  animation: fadeIn 0.2s ease both;
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
+::-webkit-scrollbar-thumb:hover {
+  background: #383848;
 }
 
-.modal-panel {
-  animation: fadeInScale 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-
-/* ─── Pulse Ring (live indicator) ───────────────────────────── */
-.pulse-ring::after {
-  content: '';
-  position: absolute;
-  inset: -2px;
-  border-radius: 50%;
-  border: 2px solid #4F9067;
-  animation: pulseRing 2s ease-out infinite;
-  pointer-events: none;
-}
-
-/* ─── Scrollbar ─────────────────────────────────────────────── */
-::-webkit-scrollbar         { width: 5px; height: 5px; }
-::-webkit-scrollbar-track   { background: #0D0D10; }
-::-webkit-scrollbar-thumb   { background: #24242A; border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: #363640; }
-
-/* ─── Leaflet dark theme ────────────────────────────────────── */
+/* Leaflet dark styling & High-Contrast Dark Tiles filter */
 .leaflet-container {
-  background: #0D0D10 !important;
+  background: #0B0B0E !important;
   font-family: 'Plus Jakarta Sans', sans-serif !important;
 }
 
+/* High-contrast dark tiles filter for standard OSM/Carto */
+.dark-mode-tiles .leaflet-tile {
+  filter: brightness(0.6) invert(1) contrast(3) hue-rotate(200deg) saturate(0.3) brightness(0.7) !important;
+}
+
 .leaflet-popup-content-wrapper {
-  background: rgba(22, 22, 26, 0.97) !important;
+  background: rgba(22, 22, 28, 0.95) !important;
   backdrop-filter: blur(12px) !important;
   color: #EFEFEF !important;
-  border: 1px solid rgba(255,255,255,0.07) !important;
-  border-radius: 10px !important;
-  box-shadow: 0 16px 40px -8px rgba(0, 0, 0, 0.75) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 16px 36px -5px rgba(0, 0, 0, 0.8) !important;
 }
 
 .leaflet-popup-tip {
-  background: rgba(22, 22, 26, 0.97) !important;
-}
-
-.leaflet-popup-close-button {
-  color: #888888 !important;
-  font-size: 16px !important;
-}
-
-.leaflet-popup-close-button:hover {
-  color: #EFEFEF !important;
-}
-
-.leaflet-control-zoom a {
-  background: rgba(22, 22, 26, 0.92) !important;
-  color: #CCCCCC !important;
-  border-color: rgba(255,255,255,0.08) !important;
-  backdrop-filter: blur(8px) !important;
-}
-
-.leaflet-control-zoom a:hover {
-  background: rgba(36, 36, 44, 0.98) !important;
-  color: #FFFFFF !important;
-}
-
-/* ─── Topbar Ticker ────────────────────────────────────────── */
-@keyframes tickerScroll {
-  0%   { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-}
-
-.ticker-track {
-  animation: tickerScroll 28s linear infinite;
-  white-space: nowrap;
-}
-
-.ticker-track:hover {
-  animation-play-state: paused;
+  background: rgba(22, 22, 28, 0.95) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
 }

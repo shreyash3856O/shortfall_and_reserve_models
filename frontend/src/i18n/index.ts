@@ -11,6 +11,7 @@ const resources = {
         productionTrends: "Production Trends",
         riskRootCause: "Risk & Root Causes",
         actions: "Recommended Actions",
+        equipment: "Equipment & Spares Store",
         digitalTwin: "Digital Twin Map",
         dataHealth: "Data & System Health",
         chatbot: "AI Assistant",
@@ -72,6 +73,12 @@ const resources = {
         heading: "Recommended Action Plan",
         subheading: "Actionable operational steps ranked by expected production recovery impact.",
       },
+      equipment: {
+        heading: "Predictive Equipment & Spares Store",
+        subheading: "AI-driven machinery breakdown forecasting, telemetry wear-out alerts, and one-click depot dispatch.",
+        emergencyRequisition: "Emergency Dispatch Cart",
+        checkout: "Submit Purchase Requisition",
+      },
       digitalTwin: {
         heading: "Digital Twin Map",
         subheading: "Interactive geographical map of ore deposits, active equipment, and risk zones.",
@@ -102,6 +109,7 @@ const resources = {
         productionTrends: "उत्पादन रुझान",
         riskRootCause: "जोखिम और मूल कारण",
         actions: "सुझाई गई कार्रवाई",
+        equipment: "उपकरण और पुर्जे स्टोर",
         digitalTwin: "डिजिटल ट्विन मैप",
         dataHealth: "डेटा और सिस्टम स्वास्थ्य",
         chatbot: "एआई सहायक",
@@ -163,6 +171,12 @@ const resources = {
         heading: "सुझाई गई कार्य योजना",
         subheading: "उत्पादन सुधार प्रभाव के आधार पर प्राथमिकता प्राप्त कदम।",
       },
+      equipment: {
+        heading: "पूर्वानुमानित उपकरण और पुर्जे स्टोर",
+        subheading: "एआई उपकरण खराबी पूर्वानुमान और एक-क्लिक डिपो प्रेषण।",
+        emergencyRequisition: "आपातकालीन प्रेषण कार्ट",
+        checkout: "खरीद मांग पत्र जमा करें",
+      },
       digitalTwin: {
         heading: "डिजिटल ट्विन मैप",
         subheading: "अयस्क भंडार, उपकरण और जोखिम क्षेत्रों का इंटरेक्टिव मानचित्र।",
@@ -193,6 +207,7 @@ const resources = {
         productionTrends: "उत्पादन ट्रेंड",
         riskRootCause: "धोका आणि मूळ कारणे",
         actions: "सुचवलेल्या कृती",
+        equipment: "उपकरणे व स्पेअर्स स्टोअर",
         digitalTwin: "डिजिटल ट्विन नकाशा",
         dataHealth: "डेटा व प्रणाली स्थिती",
         chatbot: "एआय सहाय्यक",
@@ -253,6 +268,12 @@ const resources = {
       actions: {
         heading: "सुचवलेली कृती योजना",
         subheading: "उत्पादन सुधारणेच्या प्रभावानुसार प्राधान्यीकृत पावले.",
+      },
+      equipment: {
+        heading: "उपकरणे व स्पेअर्स स्टोअर",
+        subheading: "एआय उपकरण बिघाड अंदाज आणि वन-क्लिक डेपो डिस्पॅच.",
+        emergencyRequisition: "तातडीचे प्रेषण कार्ट",
+        checkout: "मागणी पत्र सादर करा",
       },
       digitalTwin: {
         heading: "डिजिटल ट्विन नकाशा",

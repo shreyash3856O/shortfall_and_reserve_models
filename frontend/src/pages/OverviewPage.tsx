@@ -40,7 +40,7 @@ export default function OverviewPage({ onSelectMine }: OverviewPageProps) {
   const handleRefresh = async () => {
     setIsRefreshing(true);
     await loadData();
-    setTimeout(() => setIsRefreshing(false), 600);
+    setTimeout(() => setIsRefreshing(false), 500);
   };
 
   const exportReportCSV = () => {
@@ -88,17 +88,21 @@ export default function OverviewPage({ onSelectMine }: OverviewPageProps) {
 
   return (
     <Skeleton
-      name="overview-dashboard-v2"
+      name="overview-dashboard-v3"
       loading={isLoading}
       fallback={<OverviewSkeleton />}
     >
-      <div className="p-6 lg:p-8 space-y-6 max-w-6xl mx-auto font-sans animate-fade-in">
+      <div className="p-6 lg:p-8 space-y-6 max-w-6xl mx-auto font-sans animate-fade-in relative">
+        {/* Subtle Ambient Glow Effect */}
+        <div className="absolute top-10 left-1/4 w-96 h-96 bg-[#4F9067]/5 rounded-full blur-3xl pointer-events-none -z-10" />
+        <div className="absolute top-32 right-1/4 w-96 h-96 bg-[#C98040]/5 rounded-full blur-3xl pointer-events-none -z-10" />
+
         {/* Header with Live Actions */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 animate-fade-in-up">
           <div>
             <div className="flex items-center gap-2.5">
-              <h1 className="text-2xl font-bold text-[#EFEFEF] tracking-tight">{t('overview.heading')}</h1>
-              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#4F9067]/15 text-[#4F9067] border border-[#4F9067]/30 flex items-center gap-1">
+              <h1 className="text-2xl font-extrabold text-[#F5F5F7] tracking-tight">{t('overview.heading')}</h1>
+              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#4F9067]/15 text-[#4F9067] border border-[#4F9067]/30 flex items-center gap-1.5 shadow-sm">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#4F9067] animate-ping inline-block"></span>
                 LIVE SCADA
               </span>
@@ -111,19 +115,19 @@ export default function OverviewPage({ onSelectMine }: OverviewPageProps) {
             <button
               onClick={handleRefresh}
               disabled={isRefreshing}
-              className="bg-[#16161A] hover:bg-[#202028] border border-[#24242A] text-[#C0BDB8] hover:text-white px-3 py-1.5 rounded-lg text-[12px] font-medium transition-all flex items-center gap-1.5 shadow-sm"
-              title="Refresh telemetry streams"
+              className="bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] text-[#C0BDB8] hover:text-white px-3 py-1.5 rounded-xl text-[12px] font-medium transition-all flex items-center gap-1.5 shadow-sm"
+              title="Refresh telemetry stream"
             >
               <svg className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin text-[#4F9067]' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
               </svg>
-              <span>{isRefreshing ? 'Syncing...' : 'Sync Data'}</span>
+              <span>{isRefreshing ? 'Syncing...' : 'Sync Telemetry'}</span>
             </button>
 
             {/* Export Shift Report Button */}
             <button
               onClick={exportReportCSV}
-              className="bg-[#202026] hover:bg-[#282832] border border-[#2E2E38] text-[#EFEFEF] px-3.5 py-1.5 rounded-lg text-[12px] font-semibold transition-all flex items-center gap-1.5 shadow-sm"
+              className="bg-white/[0.08] hover:bg-white/[0.14] border border-white/[0.15] text-white px-3.5 py-1.5 rounded-xl text-[12px] font-semibold transition-all flex items-center gap-1.5 shadow-sm hover:scale-[1.02]"
             >
               <svg className="w-3.5 h-3.5 text-[#C0BDB8]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -133,8 +137,8 @@ export default function OverviewPage({ onSelectMine }: OverviewPageProps) {
           </div>
         </div>
 
-        {/* Operational Pulse Bar (Pit & Shift Telemetry) */}
-        <div className="bg-[#141418] border border-[#222228] px-4 py-2.5 rounded-xl text-[11px] text-[#888888] flex flex-wrap items-center justify-between gap-3 shadow-inner">
+        {/* Operational Pulse Bar (Transparent Tile) */}
+        <div className="glass-tile-static px-5 py-3 rounded-2xl text-[11px] text-[#888888] flex flex-wrap items-center justify-between gap-3 animate-fade-in-up">
           <div className="flex items-center gap-4">
             <span className="flex items-center gap-1.5 text-[#CCCCCC]">
               <span className="w-2 h-2 rounded-full bg-[#4F9067]"></span>
@@ -150,20 +154,20 @@ export default function OverviewPage({ onSelectMine }: OverviewPageProps) {
           </div>
         </div>
 
-        {/* 4 Interactive KPI Cards with Glowing Borders */}
+        {/* 4 Interactive Glass KPI Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {/* Card 1: Production Progress */}
-          <div className="group bg-[#16161A] hover:bg-[#1A1A20] border border-[#24242A] hover:border-[#4F9067]/40 p-5 rounded-2xl space-y-3 transition-all duration-300 shadow-sm animate-fade-in-up stagger-1 relative overflow-hidden">
+          <div className="glass-tile p-5 rounded-2xl space-y-3 animate-fade-in-up stagger-1 relative overflow-hidden">
             <div className="flex justify-between items-center text-[#888888] text-[12px] font-medium">
               <span>{t('overview.activeProduction')}</span>
-              <span className="text-[#4F9067] font-bold text-[11px] bg-[#4F9067]/10 px-2 py-0.5 rounded-md">
-                {percentAchieved}% of Target
+              <span className="text-[#4F9067] font-bold text-[11px] bg-[#4F9067]/15 px-2 py-0.5 rounded-md">
+                {percentAchieved}% pace
               </span>
             </div>
-            <div className="text-2xl font-extrabold text-[#EFEFEF]">
-              {totalActual.toLocaleString()} <span className="text-[13px] text-[#666666] font-normal">/ {totalTarget.toLocaleString()} T</span>
+            <div className="text-2xl font-extrabold text-[#F5F5F7]">
+              {totalActual.toLocaleString()} <span className="text-[13px] text-[#777777] font-normal">/ {totalTarget.toLocaleString()} T</span>
             </div>
-            <div className="w-full bg-[#202026] rounded-full h-1.5 overflow-hidden">
+            <div className="w-full bg-white/[0.06] rounded-full h-1.5 overflow-hidden">
               <div
                 className="bg-gradient-to-r from-[#3D7852] to-[#4F9067] h-1.5 rounded-full transition-all duration-1000 ease-out"
                 style={{ width: `${Math.min(percentAchieved, 100)}%` }}
@@ -172,7 +176,7 @@ export default function OverviewPage({ onSelectMine }: OverviewPageProps) {
           </div>
 
           {/* Card 2: Mines Risk */}
-          <div className="group bg-[#16161A] hover:bg-[#1A1A20] border border-[#24242A] hover:border-[#C98040]/40 p-5 rounded-2xl space-y-3 transition-all duration-300 shadow-sm animate-fade-in-up stagger-2 relative overflow-hidden">
+          <div className="glass-tile p-5 rounded-2xl space-y-3 animate-fade-in-up stagger-2 relative overflow-hidden">
             <div className="flex justify-between items-center text-[#888888] text-[12px] font-medium">
               <span>{t('overview.minesAtRisk')}</span>
               <span className={`text-[11px] font-bold px-2 py-0.5 rounded-md ${
@@ -181,11 +185,11 @@ export default function OverviewPage({ onSelectMine }: OverviewPageProps) {
                 {atRiskMines.length > 0 ? `${atRiskMines.length} Flagged` : 'All Clean'}
               </span>
             </div>
-            <div className="text-2xl font-extrabold text-[#EFEFEF]">
+            <div className="text-2xl font-extrabold text-[#F5F5F7]">
               <span className={atRiskMines.length > 0 ? 'text-[#C98040]' : 'text-[#4F9067]'}>
                 {atRiskMines.length}
               </span>
-              <span className="text-[13px] text-[#666666] font-normal"> of {mines.length} Units</span>
+              <span className="text-[13px] text-[#777777] font-normal"> of {mines.length} Units</span>
             </div>
             <div className="text-[11px] text-[#777777] flex items-center gap-1.5">
               <span className={`w-1.5 h-1.5 rounded-full ${highRiskCount > 0 ? 'bg-[#D94F4F]' : 'bg-[#4F9067]'}`}></span>
@@ -194,15 +198,15 @@ export default function OverviewPage({ onSelectMine }: OverviewPageProps) {
           </div>
 
           {/* Card 3: Total Reserves */}
-          <div className="group bg-[#16161A] hover:bg-[#1A1A20] border border-[#24242A] hover:border-[#C0BDB8]/40 p-5 rounded-2xl space-y-3 transition-all duration-300 shadow-sm animate-fade-in-up stagger-3 relative overflow-hidden">
+          <div className="glass-tile p-5 rounded-2xl space-y-3 animate-fade-in-up stagger-3 relative overflow-hidden">
             <div className="flex justify-between items-center text-[#888888] text-[12px] font-medium">
               <span>{t('overview.totalReserves')}</span>
-              <span className="text-[#C0BDB8] font-bold text-[11px] bg-[#C0BDB8]/10 px-2 py-0.5 rounded-md">
+              <span className="text-[#C0BDB8] font-bold text-[11px] bg-white/[0.08] px-2 py-0.5 rounded-md">
                 Proved 111
               </span>
             </div>
-            <div className="text-2xl font-extrabold text-[#EFEFEF]">
-              {totalReserveOre.toFixed(3)} <span className="text-[13px] text-[#666666] font-normal">MT</span>
+            <div className="text-2xl font-extrabold text-[#F5F5F7]">
+              {totalReserveOre.toFixed(3)} <span className="text-[13px] text-[#777777] font-normal">MT</span>
             </div>
             <div className="text-[11px] text-[#777777]">
               In-situ Cutoff &ge;32% Mn &bull; Kriging Mesh
@@ -210,10 +214,10 @@ export default function OverviewPage({ onSelectMine }: OverviewPageProps) {
           </div>
 
           {/* Card 4: Model Accuracy */}
-          <div className="group bg-[#16161A] hover:bg-[#1A1A20] border border-[#24242A] hover:border-[#4F9067]/40 p-5 rounded-2xl space-y-3 transition-all duration-300 shadow-sm animate-fade-in-up stagger-4 relative overflow-hidden">
+          <div className="glass-tile p-5 rounded-2xl space-y-3 animate-fade-in-up stagger-4 relative overflow-hidden">
             <div className="flex justify-between items-center text-[#888888] text-[12px] font-medium">
               <span>{t('overview.modelReliability')}</span>
-              <span className="text-[#4F9067] font-bold text-[11px] bg-[#4F9067]/10 px-2 py-0.5 rounded-md">
+              <span className="text-[#4F9067] font-bold text-[11px] bg-[#4F9067]/15 px-2 py-0.5 rounded-md">
                 0.9921 AUC
               </span>
             </div>
@@ -228,23 +232,23 @@ export default function OverviewPage({ onSelectMine }: OverviewPageProps) {
 
         {/* High Risk Alert Banner */}
         {highRiskCount > 0 && (
-          <div className="bg-gradient-to-r from-[#201414] to-[#161416] border border-[#3E2424] p-4 rounded-2xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 transition-all shadow-md animate-fade-in-up stagger-4">
+          <div className="bg-gradient-to-r from-[#221212]/80 to-[#181216]/80 backdrop-blur-xl border border-[#482424] p-4 rounded-2xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 transition-all shadow-lg animate-fade-in-up stagger-4">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-[#D94F4F]/15 border border-[#D94F4F]/30 flex items-center justify-center text-[#D94F4F] font-bold text-xs flex-shrink-0">
+              <div className="w-8 h-8 rounded-full bg-[#D94F4F]/20 border border-[#D94F4F]/40 flex items-center justify-center text-[#D94F4F] font-bold text-xs flex-shrink-0">
                 !
               </div>
               <div>
                 <div className="text-[13px] font-bold text-[#EFEFEF]">
-                  {highRiskCount} production units require attention
+                  {highRiskCount} production units require immediate attention
                 </div>
                 <div className="text-[12px] text-[#A08888]">
-                  Production pace is below mandate due to excavator breakdown and rain front.
+                  Production pace is lagging due to equipment downtime and precipitation.
                 </div>
               </div>
             </div>
             <button
               onClick={() => setFilterTab('RISK')}
-              className="bg-[#2A1818] hover:bg-[#361E1E] border border-[#4E2424] text-[#E5A5A5] px-4 py-1.5 rounded-lg text-[12px] font-semibold transition-all duration-200 flex-shrink-0"
+              className="bg-[#2E1818] hover:bg-[#3C1E1E] border border-[#582424] text-[#E5A5A5] px-4 py-1.5 rounded-xl text-[12px] font-semibold transition-all flex-shrink-0"
             >
               Filter Flagged Units &rarr;
             </button>
@@ -252,9 +256,9 @@ export default function OverviewPage({ onSelectMine }: OverviewPageProps) {
         )}
 
         {/* Mine Production Status Section with Live Search & Filter Tabs */}
-        <div className="bg-[#16161A] border border-[#24242A] rounded-2xl overflow-hidden shadow-sm animate-fade-in-up stagger-5">
+        <div className="glass-tile-static rounded-3xl overflow-hidden shadow-xl animate-fade-in-up stagger-5">
           {/* Controls Bar: Search + Tabs */}
-          <div className="p-4 border-b border-[#222228] flex flex-wrap justify-between items-center gap-3 bg-[#18181D]">
+          <div className="p-4 sm:p-5 border-b border-white/[0.06] flex flex-wrap justify-between items-center gap-3 bg-white/[0.02]">
             {/* Search Input */}
             <div className="relative min-w-[240px] flex-1 sm:flex-initial">
               <input
@@ -262,20 +266,20 @@ export default function OverviewPage({ onSelectMine }: OverviewPageProps) {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search mine, ID, or root cause..."
-                className="w-full bg-[#121215] border border-[#24242A] rounded-lg pl-8 pr-3 py-1.5 text-[12px] text-[#EFEFEF] focus:outline-none focus:border-[#4F9067]/60 placeholder-[#666666] transition-all"
+                className="w-full bg-[#121216] border border-white/[0.08] rounded-xl pl-9 pr-3.5 py-2 text-[12px] text-[#EFEFEF] focus:outline-none focus:border-[#4F9067]/70 placeholder-[#666666] transition-all"
               />
-              <svg className="w-3.5 h-3.5 text-[#666666] absolute left-2.5 top-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="w-3.5 h-3.5 text-[#666666] absolute left-3 top-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
             </div>
 
             {/* Filter Tabs */}
-            <div className="flex items-center gap-1 bg-[#121215] border border-[#24242A] p-0.5 rounded-lg text-[11px] font-semibold">
+            <div className="flex items-center gap-1 bg-[#121216] border border-white/[0.08] p-0.5 rounded-xl text-[11px] font-semibold">
               <button
                 onClick={() => setFilterTab('ALL')}
-                className={`px-3 py-1 rounded-md transition-all duration-200 ${
+                className={`px-3.5 py-1.5 rounded-lg transition-all duration-200 ${
                   filterTab === 'ALL'
-                    ? 'bg-[#222228] text-[#EFEFEF] shadow-sm'
+                    ? 'bg-white/[0.12] text-white shadow-sm font-bold'
                     : 'text-[#777777] hover:text-[#CCCCCC]'
                 }`}
               >
@@ -283,9 +287,9 @@ export default function OverviewPage({ onSelectMine }: OverviewPageProps) {
               </button>
               <button
                 onClick={() => setFilterTab('RISK')}
-                className={`px-3 py-1 rounded-md transition-all duration-200 ${
+                className={`px-3.5 py-1.5 rounded-lg transition-all duration-200 ${
                   filterTab === 'RISK'
-                    ? 'bg-[#222228] text-[#C98040] shadow-sm'
+                    ? 'bg-[#C98040]/20 text-[#C98040] shadow-sm font-bold'
                     : 'text-[#777777] hover:text-[#CCCCCC]'
                 }`}
               >
@@ -293,9 +297,9 @@ export default function OverviewPage({ onSelectMine }: OverviewPageProps) {
               </button>
               <button
                 onClick={() => setFilterTab('OK')}
-                className={`px-3 py-1 rounded-md transition-all duration-200 ${
+                className={`px-3.5 py-1.5 rounded-lg transition-all duration-200 ${
                   filterTab === 'OK'
-                    ? 'bg-[#222228] text-[#4F9067] shadow-sm'
+                    ? 'bg-[#4F9067]/20 text-[#4F9067] shadow-sm font-bold'
                     : 'text-[#777777] hover:text-[#CCCCCC]'
                 }`}
               >
@@ -305,7 +309,7 @@ export default function OverviewPage({ onSelectMine }: OverviewPageProps) {
           </div>
 
           {/* Mine Rows */}
-          <div className="divide-y divide-[#202026]">
+          <div className="divide-y divide-white/[0.04]">
             {filteredMines.length === 0 ? (
               <div className="p-8 text-center text-[#777777] text-[13px]">
                 No production units match your search query "{searchQuery}".
@@ -319,19 +323,19 @@ export default function OverviewPage({ onSelectMine }: OverviewPageProps) {
                 return (
                   <div
                     key={m.mine_id}
-                    style={{ animationDelay: `${idx * 35}ms` }}
-                    className="p-4 sm:p-5 hover:bg-[#1A1A20] transition-colors duration-200 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 animate-fade-in-up"
+                    style={{ animationDelay: `${idx * 30}ms` }}
+                    className="p-4 sm:p-5 hover:bg-white/[0.03] transition-colors duration-200 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 animate-fade-in-up"
                   >
                     {/* Left: Identity */}
                     <div className="flex items-start sm:items-center gap-3.5 min-w-[210px]">
-                      <div className="w-10 h-10 rounded-xl bg-[#202026] border border-[#2C2C34] text-[#C0BDB8] font-bold text-xs flex items-center justify-center flex-shrink-0 shadow-sm">
+                      <div className="w-10 h-10 rounded-xl bg-white/[0.05] border border-white/[0.08] text-[#C0BDB8] font-bold text-xs flex items-center justify-center flex-shrink-0 shadow-sm">
                         {m.mine_id}
                       </div>
                       <div>
                         <div className="text-[14px] font-bold text-[#EFEFEF] flex items-center gap-2">
                           <span>{m.mine_name}</span>
                           <span
-                            className={`inline-block px-2 py-0.5 rounded text-[10px] font-semibold border ${
+                            className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${
                               isHigh
                                 ? 'bg-[#D94F4F]/15 text-[#D94F4F] border-[#D94F4F]/30'
                                 : isMed
@@ -343,7 +347,7 @@ export default function OverviewPage({ onSelectMine }: OverviewPageProps) {
                           </span>
                         </div>
                         <div className="text-[11px] text-[#777777] mt-0.5">
-                          Shortfall Probability: <strong className="text-[#AAAAAA]">{m.shortfall_probability.toFixed(0)}%</strong>
+                          Shortfall Risk: <strong className="text-[#CCCCCC]">{m.shortfall_probability.toFixed(0)}%</strong>
                         </div>
                       </div>
                     </div>
@@ -354,7 +358,7 @@ export default function OverviewPage({ onSelectMine }: OverviewPageProps) {
                         <span>Extracted: <strong className="text-[#CCCCCC]">{m.mtd_actual_tonnes.toLocaleString()} T</strong></span>
                         <span>Target: {m.target_tonnes.toLocaleString()} T</span>
                       </div>
-                      <div className="w-full bg-[#202026] rounded-full h-2 overflow-hidden">
+                      <div className="w-full bg-white/[0.06] rounded-full h-2 overflow-hidden">
                         <div
                           className={`h-2 rounded-full transition-all duration-700 ease-out ${
                             isHigh ? 'bg-[#D94F4F]' : isMed ? 'bg-[#C98040]' : 'bg-[#4F9067]'
@@ -364,7 +368,7 @@ export default function OverviewPage({ onSelectMine }: OverviewPageProps) {
                       </div>
                       <div className="text-[10px] text-[#666666] flex justify-between">
                         <span>{m.daily_avg_tonnes} T/day</span>
-                        <span className="font-medium text-[#888888]">{minePercent}% pace</span>
+                        <span className="font-medium text-[#888888]">{minePercent}% achieved</span>
                       </div>
                     </div>
 
@@ -375,10 +379,10 @@ export default function OverviewPage({ onSelectMine }: OverviewPageProps) {
                         <span>{m.main_reason}</span>
                       </div>
 
-                      {/* Quick Inspect Trigger */}
+                      {/* Quick Inspect Trigger (Pop-up) */}
                       <button
                         onClick={() => setQuickInspectMine(m)}
-                        className="bg-[#18181E] hover:bg-[#22222A] border border-[#282832] text-[#A0A0A8] hover:text-white px-2.5 py-1.5 rounded-lg text-[11px] font-medium transition-all"
+                        className="bg-white/[0.04] hover:bg-white/[0.09] border border-white/[0.08] text-[#A0A0A8] hover:text-white px-3 py-1.5 rounded-xl text-[11px] font-medium transition-all"
                         title="Quick snapshot"
                       >
                         Preview
@@ -387,7 +391,7 @@ export default function OverviewPage({ onSelectMine }: OverviewPageProps) {
                       {/* Full Diagnosis Navigation */}
                       <button
                         onClick={() => onSelectMine(m.mine_id)}
-                        className="bg-[#202026] hover:bg-[#282832] border border-[#2E2E38] text-[#EFEFEF] px-3.5 py-1.5 rounded-lg text-[12px] font-medium transition-all flex items-center gap-1.5 flex-shrink-0 shadow-sm"
+                        className="bg-white/[0.08] hover:bg-white/[0.14] border border-white/[0.15] text-[#EFEFEF] px-4 py-1.5 rounded-xl text-[12px] font-semibold transition-all flex items-center gap-1.5 flex-shrink-0 shadow-sm hover:scale-[1.02]"
                       >
                         <span>Diagnose</span>
                         <span className="text-[#888888]">&rarr;</span>
@@ -400,42 +404,42 @@ export default function OverviewPage({ onSelectMine }: OverviewPageProps) {
           </div>
         </div>
 
-        {/* Quick Inspect Modal Popup */}
+        {/* Quick Inspect Pop-up Modal */}
         {quickInspectMine && (
-          <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in">
-            <div className="bg-[#16161A] border border-[#2A2A34] rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl animate-fade-in-up">
-              <div className="flex justify-between items-center border-b border-[#222228] pb-3">
+          <div className="fixed inset-0 bg-black/75 backdrop-blur-md z-50 flex items-center justify-center p-4 animate-fade-in">
+            <div className="bg-[#14141A]/95 border border-white/[0.12] rounded-3xl max-w-md w-full p-6 space-y-4 shadow-2xl animate-pop-up">
+              <div className="flex justify-between items-center border-b border-white/[0.08] pb-3">
                 <div className="flex items-center gap-2.5">
-                  <span className="w-8 h-8 rounded-lg bg-[#202026] border border-[#2E2E38] text-[#C0BDB8] font-bold text-xs flex items-center justify-center">
+                  <span className="w-8 h-8 rounded-xl bg-white/[0.08] border border-white/[0.12] text-[#C0BDB8] font-bold text-xs flex items-center justify-center">
                     {quickInspectMine.mine_id}
                   </span>
                   <div>
-                    <h3 className="text-base font-bold text-[#EFEFEF]">{quickInspectMine.mine_name}</h3>
+                    <h3 className="text-base font-bold text-[#F5F5F7]">{quickInspectMine.mine_name}</h3>
                     <span className="text-[11px] text-[#777777]">Telemetry Snapshot</span>
                   </div>
                 </div>
                 <button
                   onClick={() => setQuickInspectMine(null)}
-                  className="text-[#888888] hover:text-white px-2 py-1 rounded bg-[#202026] border border-[#2A2A32] text-xs transition-colors"
+                  className="text-[#888888] hover:text-white px-2.5 py-1 rounded-lg bg-white/[0.05] border border-white/[0.08] text-xs transition-colors"
                 >
                   &times; Close
                 </button>
               </div>
 
               <div className="space-y-2.5 text-[12px]">
-                <div className="flex justify-between p-2.5 bg-[#121215] rounded-lg">
+                <div className="flex justify-between p-3 bg-white/[0.03] border border-white/[0.05] rounded-xl">
                   <span className="text-[#777777]">Shortfall Probability:</span>
                   <span className="font-bold text-[#EFEFEF]">{quickInspectMine.shortfall_probability}% ({quickInspectMine.risk_level})</span>
                 </div>
-                <div className="flex justify-between p-2.5 bg-[#121215] rounded-lg">
+                <div className="flex justify-between p-3 bg-white/[0.03] border border-white/[0.05] rounded-xl">
                   <span className="text-[#777777]">Monthly Extraction:</span>
                   <span className="font-bold text-[#EFEFEF]">{quickInspectMine.mtd_actual_tonnes.toLocaleString()} / {quickInspectMine.target_tonnes.toLocaleString()} T</span>
                 </div>
-                <div className="flex justify-between p-2.5 bg-[#121215] rounded-lg">
+                <div className="flex justify-between p-3 bg-white/[0.03] border border-white/[0.05] rounded-xl">
                   <span className="text-[#777777]">Equipment Breakdown:</span>
                   <span className="font-bold text-[#EFEFEF]">{quickInspectMine.equipment_downtime_hrs} hrs/day</span>
                 </div>
-                <div className="p-3 bg-[#121215] rounded-lg space-y-1">
+                <div className="p-3.5 bg-white/[0.03] border border-white/[0.05] rounded-xl space-y-1">
                   <div className="text-[11px] text-[#777777] font-semibold uppercase tracking-wider">Root Cause:</div>
                   <div className="text-[#CCCCCC] leading-relaxed">{quickInspectMine.main_reason}</div>
                 </div>
@@ -448,7 +452,7 @@ export default function OverviewPage({ onSelectMine }: OverviewPageProps) {
                     setQuickInspectMine(null);
                     onSelectMine(id);
                   }}
-                  className="flex-1 bg-[#202026] hover:bg-[#282832] border border-[#2E2E38] text-white py-2.5 rounded-lg text-[12px] font-semibold transition-all text-center"
+                  className="flex-1 bg-white/[0.08] hover:bg-white/[0.14] border border-white/[0.15] text-white py-3 rounded-xl text-[12px] font-semibold transition-all text-center hover:scale-[1.02]"
                 >
                   Open Full SHAP Diagnosis &rarr;
                 </button>

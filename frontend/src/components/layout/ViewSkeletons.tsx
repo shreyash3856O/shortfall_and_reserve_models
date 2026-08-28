@@ -141,6 +141,33 @@ export function ActionsSkeleton() {
   );
 }
 
+export function EquipmentSkeleton() {
+  return (
+    <div className="p-6 lg:p-8 space-y-6 max-w-6xl mx-auto font-sans animate-fade-in">
+      <div className="flex justify-between items-center">
+        <div className="space-y-2">
+          <div className="h-7 w-72 rounded-md animate-shimmer" />
+          <div className="h-4 w-96 rounded-md animate-shimmer" />
+        </div>
+        <div className="h-10 w-36 rounded-xl animate-shimmer" />
+      </div>
+
+      <div className="h-24 w-full rounded-2xl animate-shimmer" />
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+        {[1, 2, 3, 4, 5, 6].map((i) => (
+          <div key={i} className="bg-[#16161A] border border-[#24242A] p-5 rounded-2xl space-y-3">
+            <div className="h-32 w-full rounded-xl animate-shimmer" />
+            <div className="h-5 w-40 rounded animate-shimmer" />
+            <div className="h-4 w-28 rounded animate-shimmer" />
+            <div className="h-10 w-full rounded-xl animate-shimmer" />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export function DigitalTwinSkeleton() {
   return (
     <div className="p-6 lg:p-8 space-y-6 max-w-6xl mx-auto font-sans animate-fade-in">

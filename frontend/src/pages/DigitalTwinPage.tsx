@@ -26,11 +26,11 @@ export default function DigitalTwinPage() {
 
   return (
     <Skeleton
-      name="digital-twin"
+      name="digital-twin-v2"
       loading={isLoading}
       fallback={<DigitalTwinSkeleton />}
     >
-      <div className="p-6 lg:p-8 space-y-5 max-w-6xl mx-auto font-sans h-full flex flex-col animate-fade-in">
+      <div className="p-6 lg:p-8 space-y-5 max-w-6xl mx-auto font-sans animate-fade-in relative">
         {/* Header */}
         <div className="animate-fade-in-up">
           <div className="text-[11px] font-semibold uppercase tracking-wider text-[#C0BDB8]">
@@ -41,17 +41,17 @@ export default function DigitalTwinPage() {
         </div>
 
         {/* 2D Digital Twin Map */}
-        <div className="flex-1 min-h-[560px] rounded-2xl overflow-hidden shadow-sm animate-fade-in-up stagger-1">
+        <div className="w-full rounded-3xl overflow-hidden shadow-2xl animate-fade-in-up stagger-1">
           <DigitalTwin2DMap mines={mines} />
         </div>
 
         {/* Technical Footnote */}
-        <div className="bg-[#16161A] border border-[#24242A] rounded-xl px-4 py-3 text-[11px] text-[#666666] flex flex-col sm:flex-row justify-between gap-2 shadow-sm animate-fade-in-up stagger-2">
+        <div className="glass-tile-static rounded-2xl px-5 py-3 text-[11px] text-[#666666] flex flex-col sm:flex-row justify-between gap-2 shadow-sm animate-fade-in-up stagger-2">
           <div className="font-medium text-[#888888]">
             Coordinates: WGS-84 &bull; UTM Zone 44N &bull; Balaghat-Nagpur Manganese Belt
           </div>
           <div className="text-[#4A4A4A]">
-            Tile Provider: Stadia / ESRI / OpenTopoMap &bull; Overlay: Leaflet.js
+            Tile Provider: OpenStreetMap / ESRI / OpenTopoMap &bull; Overlay: Leaflet.js
           </div>
         </div>
       </div>
