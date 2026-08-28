@@ -11,7 +11,6 @@ export default function ReserveMapPage() {
   const [minGradeFilter, setMinGradeFilter] = useState<number | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Point predictor form states
   const [easting, setEasting] = useState(430);
   const [northing, setNorthing] = useState(340);
   const [depth, setDepth] = useState(125);
@@ -44,13 +43,7 @@ export default function ReserveMapPage() {
     e.preventDefault();
     setIsPredicting(true);
     try {
-      const res = await api.predictReservePoint({
-        easting,
-        northing,
-        depth_m: depth,
-        ndvi,
-        moisture,
-      });
+      const res = await api.predictReservePoint({ easting, northing, depth_m: depth, ndvi, moisture });
       setPrediction(res);
     } catch (err) {
       console.error('Point prediction failed', err);
@@ -59,200 +52,122 @@ export default function ReserveMapPage() {
     }
   };
 
+  const inputClass = "w-full bg-[#111111] border border-[#2E2E2E] rounded px-3 py-2 text-[#EFEFEF] text-[12px] focus:outline-none focus:border-[#4A4A4A] transition-colors";
+
   return (
     <div className="p-6 lg:p-8 space-y-6 max-w-7xl mx-auto font-sans">
-      {/* Header */}
       <div>
-        <div className="text-[11px] font-mono uppercase tracking-widest text-[#C8A96E]">
+        <div className="text-[11px] font-semibold uppercase tracking-wider text-[#C0BDB8]">
           Geological Reserve Model (Model 1)
         </div>
-        <h1 className="text-2xl font-bold text-[#E6EDF3] mt-1">{t('reserve.heading')}</h1>
-        <p className="text-[13px] text-[#8B949E] mt-1">{t('reserve.subheading')}</p>
+        <h1 className="text-2xl font-bold text-[#EFEFEF] mt-1">{t('reserve.heading')}</h1>
+        <p className="text-[13px] text-[#888888] mt-1">{t('reserve.subheading')}</p>
       </div>
 
-      {/* Zone Summary Rollup */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 font-mono text-[11px]">
-        {summary.map((item) => {
-          const isTotal = item.zone_id === -1;
-          const isGreen = item.zone_id === 2;
-          const isYellow = item.zone_id === 1;
-
-          return (
-            <div
-              key={item.zone_id}
-              className={`p-4 border bg-[#12151B] ${
-                isTotal
-                  ? 'border-[#C8A96E]/50'
-                  : isGreen
-                  ? 'border-[#3D8C5A]/50'
-                  : isYellow
-                  ? 'border-[#C4A238]/50'
-                  : 'border-[#232834]'
-              }`}
-            >
-              <div className="text-[#8B949E] uppercase tracking-wider text-[10px]">{item.zone}</div>
-              <div className="text-2xl font-bold text-[#E6EDF3] mt-1">
-                {item.tonnage_mt.toFixed(3)} <span className="text-[12px] text-[#586069]">MT</span>
-              </div>
-              <div className="mt-2 pt-2 border-t border-[#232834] text-[#8B949E] space-y-0.5 text-[10px]">
-                <div className="flex justify-between">
-                  <span>Mean Ore Grade:</span>
-                  <span className="text-[#E6EDF3]">{item.mean_grade_mn_pct.toFixed(2)}% Mn</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Mean Thickness:</span>
-                  <span className="text-[#E6EDF3]">{item.mean_thickness_m.toFixed(2)} m</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Deposit Area:</span>
-                  <span>{item.area_km2.toFixed(4)} km²</span>
-                </div>
-              </div>
+      {/* Zone Rollup */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-0 border border-[#2E2E2E] bg-[#1A1A1A] rounded-lg overflow-hidden divide-x divide-y lg:divide-y-0 divide-[#2E2E2E]">
+        {summary.map((item) => (
+          <div key={item.zone_id} className="p-5">
+            <div className={`text-[11px] font-semibold uppercase tracking-wider ${
+              item.zone_id === 2 ? 'text-[#4F9067]' : item.zone_id === 1 ? 'text-[#C98040]' : item.zone_id === -1 ? 'text-[#C0BDB8]' : 'text-[#D94F4F]'
+            }`}>
+              {item.zone}
             </div>
-          );
-        })}
+            <div className="text-2xl font-bold text-[#EFEFEF] mt-1">
+              {item.tonnage_mt.toFixed(3)} <span className="text-[13px] text-[#555555] font-normal">MT</span>
+            </div>
+            <div className="mt-2 pt-2 border-t border-[#2E2E2E] text-[#777777] space-y-1 text-[11px]">
+              <div className="flex justify-between"><span>Mean Grade:</span><span className="text-[#EFEFEF] font-medium">{item.mean_grade_mn_pct.toFixed(2)}% Mn</span></div>
+              <div className="flex justify-between"><span>Thickness:</span><span className="text-[#EFEFEF] font-medium">{item.mean_thickness_m.toFixed(2)} m</span></div>
+              <div className="flex justify-between"><span>Area:</span><span>{item.area_km2.toFixed(4)} km&sup2;</span></div>
+            </div>
+          </div>
+        ))}
       </div>
 
-      {/* Two Column Layout: Point Predictor vs Spatial Grid Table */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Left: Point Coordinate Estimator */}
-        <div className="lg:col-span-4 bg-[#12151B] border border-[#232834] p-5 space-y-4 font-mono text-[11px]">
-          <div className="border-b border-[#232834] pb-2 text-[12px] font-bold text-[#C8A96E]">
-            [1] {t('reserve.pointInspector')}
+        {/* Point Estimator */}
+        <div className="lg:col-span-4 bg-[#1A1A1A] border border-[#2E2E2E] p-5 space-y-4 rounded-lg">
+          <div className="border-b border-[#2E2E2E] pb-3 flex items-center gap-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#C0BDB8]"></span>
+            <span className="text-[13px] font-bold text-[#EFEFEF]">{t('reserve.pointInspector')}</span>
           </div>
           <form onSubmit={handlePredictPoint} className="space-y-3">
             <div>
-              <label className="block text-[#8B949E] mb-1">EASTING (0-1200 m):</label>
-              <input
-                type="number"
-                value={easting}
-                onChange={(e) => setEasting(Number(e.target.value))}
-                className="w-full bg-[#0B0D10] border border-[#232834] px-3 py-1.5 text-[#E6EDF3]"
-              />
+              <label className="block text-[#888888] text-[11px] font-medium mb-1">Easting (0–1200 m)</label>
+              <input type="number" value={easting} onChange={(e) => setEasting(Number(e.target.value))} className={inputClass} />
             </div>
             <div>
-              <label className="block text-[#8B949E] mb-1">NORTHING (0-800 m):</label>
-              <input
-                type="number"
-                value={northing}
-                onChange={(e) => setNorthing(Number(e.target.value))}
-                className="w-full bg-[#0B0D10] border border-[#232834] px-3 py-1.5 text-[#E6EDF3]"
-              />
+              <label className="block text-[#888888] text-[11px] font-medium mb-1">Northing (0–800 m)</label>
+              <input type="number" value={northing} onChange={(e) => setNorthing(Number(e.target.value))} className={inputClass} />
             </div>
             <div>
-              <label className="block text-[#8B949E] mb-1">DRILL DEPTH (m):</label>
-              <input
-                type="number"
-                value={depth}
-                onChange={(e) => setDepth(Number(e.target.value))}
-                className="w-full bg-[#0B0D10] border border-[#232834] px-3 py-1.5 text-[#E6EDF3]"
-              />
+              <label className="block text-[#888888] text-[11px] font-medium mb-1">Drill Depth (m)</label>
+              <input type="number" value={depth} onChange={(e) => setDepth(Number(e.target.value))} className={inputClass} />
             </div>
             <div className="grid grid-cols-2 gap-2">
               <div>
-                <label className="block text-[#8B949E] mb-1">NDVI (0-1):</label>
-                <input
-                  type="number"
-                  step="0.01"
-                  value={ndvi}
-                  onChange={(e) => setNdvi(Number(e.target.value))}
-                  className="w-full bg-[#0B0D10] border border-[#232834] px-2 py-1.5 text-[#E6EDF3]"
-                />
+                <label className="block text-[#888888] text-[11px] font-medium mb-1">NDVI (0–1)</label>
+                <input type="number" step="0.01" value={ndvi} onChange={(e) => setNdvi(Number(e.target.value))} className={inputClass} />
               </div>
               <div>
-                <label className="block text-[#8B949E] mb-1">NDMI (0-1):</label>
-                <input
-                  type="number"
-                  step="0.01"
-                  value={moisture}
-                  onChange={(e) => setMoisture(Number(e.target.value))}
-                  className="w-full bg-[#0B0D10] border border-[#232834] px-2 py-1.5 text-[#E6EDF3]"
-                />
+                <label className="block text-[#888888] text-[11px] font-medium mb-1">NDMI (0–1)</label>
+                <input type="number" step="0.01" value={moisture} onChange={(e) => setMoisture(Number(e.target.value))} className={inputClass} />
               </div>
             </div>
             <button
               type="submit"
               disabled={isPredicting}
-              className="w-full bg-[#1D222A] hover:bg-[#232834] border border-[#2E3544] text-[#C8A96E] py-2 font-bold tracking-wider transition-colors"
+              className="w-full bg-[#252525] hover:bg-[#303030] disabled:opacity-40 border border-[#3A3A3A] text-[#EFEFEF] py-2.5 rounded text-[12px] font-bold tracking-wide transition-all"
             >
-              {isPredicting ? 'ESTIMATING KRIGING RESIDUALS...' : 'RUN SPATIAL REGRESSION &rarr;'}
+              {isPredicting ? 'Running Spatial Regression...' : 'Run Spatial Regression &rarr;'}
             </button>
           </form>
 
-          {/* Prediction Result Display */}
           {prediction && (
-            <div className="mt-4 p-3 bg-[#161A22] border border-[#2E3544] space-y-1.5">
-              <div className="text-[#C8A96E] font-bold border-b border-[#232834] pb-1">
-                PREDICTION RESULT
+            <div className="mt-2 p-4 bg-[#161616] border border-[#2E2E2E] rounded-lg space-y-2 text-[12px]">
+              <div className="text-[11px] font-semibold text-[#C0BDB8] uppercase tracking-wider border-b border-[#2E2E2E] pb-1.5 mb-1.5">
+                Estimation Result
               </div>
-              <div className="flex justify-between">
-                <span className="text-[#8B949E]">Ore Grade:</span>
-                <span className="text-[#E6EDF3] font-bold">{prediction.grade_pct.toFixed(2)}% Mn</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-[#8B949E]">95% CI:</span>
-                <span>[{prediction.grade_ci_lower.toFixed(1)}% - {prediction.grade_ci_upper.toFixed(1)}%]</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-[#8B949E]">Seam Thickness:</span>
-                <span className="text-[#E6EDF3]">{prediction.thickness_m.toFixed(2)} m</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-[#8B949E]">100m Block Tonnage:</span>
-                <span className="text-[#E6EDF3]">{prediction.tonnage_mt_per_100m_block.toFixed(3)} MT</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-[#8B949E]">Classification:</span>
-                <span className="text-[#C8A96E] font-bold">{prediction.zone}</span>
-              </div>
+              <div className="flex justify-between text-[#AAAAAA]"><span className="text-[#777777]">Ore Grade:</span><span className="text-[#EFEFEF] font-bold">{prediction.grade_pct.toFixed(2)}% Mn</span></div>
+              <div className="flex justify-between text-[#AAAAAA]"><span className="text-[#777777]">95% CI:</span><span>[{prediction.grade_ci_lower.toFixed(1)}% &ndash; {prediction.grade_ci_upper.toFixed(1)}%]</span></div>
+              <div className="flex justify-between text-[#AAAAAA]"><span className="text-[#777777]">Thickness:</span><span className="text-[#EFEFEF] font-medium">{prediction.thickness_m.toFixed(2)} m</span></div>
+              <div className="flex justify-between text-[#AAAAAA]"><span className="text-[#777777]">Block Tonnage:</span><span className="text-[#EFEFEF] font-medium">{prediction.tonnage_mt_per_100m_block.toFixed(3)} MT</span></div>
+              <div className="flex justify-between text-[#AAAAAA]"><span className="text-[#777777]">Zone:</span><span className="text-[#4F9067] font-bold">{prediction.zone}</span></div>
             </div>
           )}
         </div>
 
-        {/* Right: Spatial Block Grid Table */}
-        <div className="lg:col-span-8 bg-[#12151B] border border-[#232834] flex flex-col font-mono text-[11px]">
-          <div className="p-4 border-b border-[#232834] flex flex-wrap justify-between items-center gap-3 bg-[#161A22]">
-            <div className="font-bold text-[#E6EDF3]">
-              [2] 100x100m Spatial Block Grid ({totalBlocks} blocks)
+        {/* Grid Table */}
+        <div className="lg:col-span-8 bg-[#1A1A1A] border border-[#2E2E2E] rounded-lg flex flex-col overflow-hidden">
+          <div className="p-4 border-b border-[#2E2E2E] flex flex-wrap justify-between items-center gap-3 bg-[#1E1E1E]">
+            <div className="text-[13px] font-bold text-[#EFEFEF]">
+              100&times;100m Spatial Block Grid <span className="text-[#777777] font-normal">({totalBlocks} blocks)</span>
             </div>
-            {/* Filter Buttons */}
-            <div className="flex items-center gap-2 text-[10px]">
-              <button
-                onClick={() => { setMinGradeFilter(undefined); setPage(1); }}
-                className={`px-2 py-1 border ${
-                  minGradeFilter === undefined
-                    ? 'bg-[#232834] text-[#C8A96E] border-[#2E3544]'
-                    : 'bg-[#12151B] text-[#8B949E] border-[#232834]'
-                }`}
-              >
-                All
-              </button>
-              <button
-                onClick={() => { setMinGradeFilter(32); setPage(1); }}
-                className={`px-2 py-1 border ${
-                  minGradeFilter === 32
-                    ? 'bg-[#232834] text-[#C8A96E] border-[#2E3544]'
-                    : 'bg-[#12151B] text-[#8B949E] border-[#232834]'
-                }`}
-              >
-                &gt;=32% Mn
-              </button>
-              <button
-                onClick={() => { setMinGradeFilter(38); setPage(1); }}
-                className={`px-2 py-1 border ${
-                  minGradeFilter === 38
-                    ? 'bg-[#232834] text-[#C8A96E] border-[#2E3544]'
-                    : 'bg-[#12151B] text-[#8B949E] border-[#232834]'
-                }`}
-              >
-                &gt;=38% Mn
-              </button>
+            <div className="flex items-center gap-1.5 text-[11px] font-semibold">
+              {[
+                { label: 'All Zones', val: undefined },
+                { label: '≥32% Mn', val: 32 },
+                { label: '≥38% Mn', val: 38 },
+              ].map(({ label, val }) => (
+                <button
+                  key={String(val)}
+                  onClick={() => { setMinGradeFilter(val); setPage(1); }}
+                  className={`px-3 py-1 rounded border transition-all ${
+                    minGradeFilter === val
+                      ? 'bg-[#272727] text-[#EFEFEF] border-[#3C3C3C]'
+                      : 'bg-[#1E1E1E] text-[#888888] border-[#2E2E2E] hover:text-[#CCCCCC]'
+                  }`}
+                >
+                  {label}
+                </button>
+              ))}
             </div>
           </div>
 
           <div className="overflow-x-auto flex-1">
-            <table className="w-full text-left">
-              <thead className="bg-[#0E1015] border-b border-[#232834] text-[#8B949E] uppercase text-[10px]">
+            <table className="w-full text-left text-[12px]">
+              <thead className="bg-[#161616] border-b border-[#2E2E2E] text-[#777777] uppercase text-[10px] tracking-wider font-semibold">
                 <tr>
                   <th className="py-2.5 px-3">Easting</th>
                   <th className="py-2.5 px-3">Northing</th>
@@ -263,26 +178,24 @@ export default function ReserveMapPage() {
                   <th className="py-2.5 px-3">Zone</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#232834] text-[#E6EDF3]">
+              <tbody className="divide-y divide-[#2E2E2E] text-[#CCCCCC]">
                 {blocks.map((b, idx) => (
-                  <tr key={idx} className="hover:bg-[#161A22] transition-colors">
+                  <tr key={idx} className="hover:bg-[#1E1E1E] transition-colors">
                     <td className="py-2 px-3">{b.easting.toFixed(0)}m</td>
                     <td className="py-2 px-3">{b.northing.toFixed(0)}m</td>
                     <td className="py-2 px-3">{b.depth_m.toFixed(0)}m</td>
-                    <td className="py-2 px-3 font-bold text-[#C8A96E]">{b.grade_pct.toFixed(2)}%</td>
+                    <td className="py-2 px-3 font-bold text-[#EFEFEF]">{b.grade_pct.toFixed(2)}%</td>
                     <td className="py-2 px-3">{b.thickness_m.toFixed(2)}m</td>
                     <td className="py-2 px-3">{b.tonnage_mt.toFixed(3)} MT</td>
                     <td className="py-2 px-3">
-                      <span
-                        className={`inline-block px-1.5 py-0.5 text-[9px] font-bold ${
-                          b.zone_id === 2
-                            ? 'bg-[#3D8C5A]/20 text-[#3D8C5A] border border-[#3D8C5A]/40'
-                            : b.zone_id === 1
-                            ? 'bg-[#C4A238]/20 text-[#C4A238] border border-[#C4A238]/40'
-                            : 'bg-[#B84343]/20 text-[#B84343] border border-[#B84343]/40'
-                        }`}
-                      >
-                        {b.zone_id === 2 ? 'HIGH >=38%' : b.zone_id === 1 ? 'MED 32-38%' : 'LOW <32%'}
+                      <span className={`inline-block px-2 py-0.5 text-[10px] font-semibold rounded ${
+                        b.zone_id === 2
+                          ? 'bg-[#4F9067]/10 text-[#4F9067] border border-[#4F9067]/30'
+                          : b.zone_id === 1
+                          ? 'bg-[#C98040]/10 text-[#C98040] border border-[#C98040]/30'
+                          : 'bg-[#D94F4F]/10 text-[#D94F4F] border border-[#D94F4F]/30'
+                      }`}>
+                        {b.zone_id === 2 ? 'High ≥38%' : b.zone_id === 1 ? 'Med 32-38%' : 'Low <32%'}
                       </span>
                     </td>
                   </tr>
@@ -291,26 +204,11 @@ export default function ReserveMapPage() {
             </table>
           </div>
 
-          {/* Pagination */}
-          <div className="p-3 border-t border-[#232834] flex justify-between items-center bg-[#161A22] text-[10px]">
-            <span className="text-[#8B949E]">
-              Showing page {page} of {Math.ceil(totalBlocks / 20) || 1}
-            </span>
+          <div className="p-3 border-t border-[#2E2E2E] flex justify-between items-center bg-[#1E1E1E] text-[11px]">
+            <span className="text-[#777777] font-medium">Page {page} of {Math.ceil(totalBlocks / 20) || 1}</span>
             <div className="flex gap-2">
-              <button
-                disabled={page <= 1}
-                onClick={() => setPage((p) => p - 1)}
-                className="px-2 py-1 bg-[#12151B] border border-[#232834] text-[#8B949E] disabled:opacity-40"
-              >
-                &larr; PREV
-              </button>
-              <button
-                disabled={page * 20 >= totalBlocks}
-                onClick={() => setPage((p) => p + 1)}
-                className="px-2 py-1 bg-[#12151B] border border-[#232834] text-[#E6EDF3] disabled:opacity-40"
-              >
-                NEXT &rarr;
-              </button>
+              <button disabled={page <= 1} onClick={() => setPage((p) => p - 1)} className="px-3 py-1 bg-[#1A1A1A] border border-[#2E2E2E] text-[#888888] rounded disabled:opacity-40 hover:text-[#EFEFEF] transition-colors">&larr; Prev</button>
+              <button disabled={page * 20 >= totalBlocks} onClick={() => setPage((p) => p + 1)} className="px-3 py-1 bg-[#1A1A1A] border border-[#2E2E2E] text-[#CCCCCC] rounded disabled:opacity-40 hover:text-[#EFEFEF] transition-colors">Next &rarr;</button>
             </div>
           </div>
         </div>

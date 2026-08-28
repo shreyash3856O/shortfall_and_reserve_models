@@ -19,39 +19,39 @@ interface SidebarProps {
 export default function Sidebar({ activePage, onNavigate }: SidebarProps) {
   const { t } = useTranslation();
 
-  const navItems: { id: PageId; labelKey: string; code: string }[] = [
-    { id: 'landing', labelKey: 'nav.landing', code: '00' },
-    { id: 'overview', labelKey: 'nav.dashboard', code: '01' },
-    { id: 'reserve', labelKey: 'nav.reserveMap', code: '02' },
-    { id: 'trends', labelKey: 'nav.productionTrends', code: '03' },
-    { id: 'risk', labelKey: 'nav.riskRootCause', code: '04' },
-    { id: 'actions', labelKey: 'nav.actions', code: '05' },
-    { id: 'digitalTwin', labelKey: 'nav.digitalTwin', code: '06' },
-    { id: 'dataHealth', labelKey: 'nav.dataHealth', code: '07' },
+  const navItems: { id: PageId; labelKey: string }[] = [
+    { id: 'landing', labelKey: 'nav.landing' },
+    { id: 'overview', labelKey: 'nav.dashboard' },
+    { id: 'reserve', labelKey: 'nav.reserveMap' },
+    { id: 'trends', labelKey: 'nav.productionTrends' },
+    { id: 'risk', labelKey: 'nav.riskRootCause' },
+    { id: 'actions', labelKey: 'nav.actions' },
+    { id: 'digitalTwin', labelKey: 'nav.digitalTwin' },
+    { id: 'dataHealth', labelKey: 'nav.dataHealth' },
   ];
 
   return (
-    <aside className="w-64 bg-[#12151B] border-r border-[#232834] flex flex-col justify-between select-none">
+    <aside className="w-64 bg-[#1A1A1A] border-r border-[#2E2E2E] flex flex-col justify-between select-none">
       {/* Navigation List */}
-      <div className="py-4">
-        <div className="px-5 mb-3 text-[10px] font-mono uppercase tracking-widest text-[#586069]">
+      <div className="py-5">
+        <div className="px-5 mb-3 text-[11px] font-semibold uppercase tracking-wider text-[#585858]">
           Operational Navigation
         </div>
-        <nav className="space-y-0.5 px-2">
+        <nav className="space-y-0.5 px-3">
           {navItems.map((item) => {
             const isActive = activePage === item.id;
             return (
               <button
                 key={item.id}
                 onClick={() => onNavigate(item.id)}
-                className={`w-full flex items-center gap-3 px-3 py-2.5 text-[12px] font-sans text-left transition-colors ${
+                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded text-[13px] font-medium transition-all ${
                   isActive
-                    ? 'bg-[#1D222A] text-[#C8A96E] border-l-2 border-[#C8A96E] font-semibold'
-                    : 'text-[#8B949E] hover:text-[#E6EDF3] hover:bg-[#161A22] border-l-2 border-transparent'
+                    ? 'bg-[#272727] text-[#EFEFEF] font-semibold border border-[#3A3A3A]'
+                    : 'text-[#888888] hover:text-[#CCCCCC] hover:bg-[#222222]'
                 }`}
               >
-                <span className="font-mono text-[10px] text-[#586069]">{item.code}</span>
                 <span>{t(item.labelKey)}</span>
+                {isActive && <span className="w-1.5 h-1.5 rounded-full bg-[#C0BDB8]"></span>}
               </button>
             );
           })}
@@ -59,9 +59,9 @@ export default function Sidebar({ activePage, onNavigate }: SidebarProps) {
       </div>
 
       {/* System Footnote */}
-      <div className="p-4 border-t border-[#232834] text-[11px] font-mono text-[#586069] bg-[#0E1015]">
-        <div>MOIL MINE DECISION CORE</div>
-        <div className="text-[10px] text-[#8B949E] mt-0.5">XGBoost v2.1 | PyKrige v1.7</div>
+      <div className="p-4 border-t border-[#2E2E2E] text-[11px] text-[#555555] bg-[#141414]">
+        <div className="font-semibold text-[#7A7A7A]">MOIL Mine Decision Core</div>
+        <div className="text-[10px] text-[#4A4A4A] mt-0.5">XGBoost &bull; Ordinary Kriging &bull; SHAP</div>
       </div>
     </aside>
   );

@@ -8,35 +8,32 @@ export default {
     extend: {
       colors: {
         midas: {
-          bg: "#0B0D10",
-          card: "#12151B",
-          cardHover: "#181C24",
-          panel: "#161A22",
-          border: "#232834",
-          borderLight: "#2E3544",
-          textMain: "#E6EDF3",
-          textMuted: "#8B949E",
-          textDim: "#586069",
-          accent: "#C8A96E",       // Muted Manganese Gold / Ochre
-          accentHover: "#B3955A",
-          riskHigh: "#D9534F",     // Desaturated Red
-          riskMed: "#E09B3D",      // Desaturated Amber
-          riskLow: "#4E9F6E",      // Desaturated Healthy Green
-          zoneGreen: "#3D8C5A",
-          zoneYellow: "#C4A238",
-          zoneRed: "#B84343",
+          bg: "#111111",
+          card: "#1E1E1E",
+          cardHover: "#252525",
+          panel: "#191919",
+          border: "#2E2E2E",
+          borderLight: "#3C3C3C",
+          textMain: "#EFEFEF",
+          textMuted: "#9A9A9A",
+          textDim: "#606060",
+          accent: "#C0BDB8",       // Warm Silver-Stone
+          accentDim: "#8A8680",
+          riskHigh: "#D94F4F",     // Muted Crimson
+          riskMed: "#C98040",      // Muted Amber
+          riskLow: "#4F9067",      // Muted Sage Green
         },
       },
       fontFamily: {
-        mono: ["'JetBrains Mono'", "ui-monospace", "SFMono-Regular", "Menlo", "Monaco", "Consolas", "monospace"],
-        sans: ["'Inter'", "-apple-system", "BlinkMacSystemFont", "'Segoe UI'", "Roboto", "sans-serif"],
+        sans: ["'Plus Jakarta Sans'", "'Inter'", "-apple-system", "BlinkMacSystemFont", "'Segoe UI'", "Roboto", "sans-serif"],
+        mono: ["'JetBrains Mono'", "ui-monospace", "SFMono-Regular", "Menlo", "monospace"],
       },
       borderRadius: {
         none: "0px",
-        sm: "2px",
-        DEFAULT: "3px",
-        md: "4px",
-        lg: "6px",
+        sm: "4px",
+        DEFAULT: "6px",
+        md: "8px",
+        lg: "10px",
       },
     },
   },

@@ -23,20 +23,21 @@ export default function DigitalTwinPage() {
   }, []);
 
   return (
-    <div className="p-6 lg:p-8 space-y-6 max-w-7xl mx-auto font-sans h-full flex flex-col">
+    <div className="p-6 lg:p-8 space-y-5 max-w-7xl mx-auto font-sans h-full flex flex-col">
       {/* Header */}
       <div>
-        <div className="text-[11px] font-mono uppercase tracking-widest text-[#C8A96E]">
+        <div className="text-[11px] font-semibold uppercase tracking-wider text-[#C0BDB8]">
           Geographical Information System (GIS)
         </div>
-        <h1 className="text-2xl font-bold text-[#E6EDF3] mt-1">{t('digitalTwin.heading')}</h1>
-        <p className="text-[13px] text-[#8B949E] mt-1">{t('digitalTwin.subheading')}</p>
+        <h1 className="text-2xl font-bold text-[#EFEFEF] mt-1">{t('digitalTwin.heading')}</h1>
+        <p className="text-[13px] text-[#888888] mt-1">{t('digitalTwin.subheading')}</p>
       </div>
 
-      {/* 2D Digital Twin Map Viewport */}
-      <div className="flex-1 min-h-[560px]">
+      {/* 2D Digital Twin Map */}
+      <div className="flex-1 min-h-[580px]">
         {isLoading ? (
-          <div className="p-8 font-mono text-[12px] text-[#8B949E]">
+          <div className="h-full flex items-center gap-2 p-8 text-[13px] text-[#888888]">
+            <span className="w-2 h-2 rounded-full bg-[#C0BDB8] animate-pulse"></span>
             Loading GIS layers and telemetry markers...
           </div>
         ) : (
@@ -44,13 +45,13 @@ export default function DigitalTwinPage() {
         )}
       </div>
 
-      {/* Technical Footnote & Roadmap */}
-      <div className="bg-[#12151B] border border-[#232834] p-4 text-[10px] font-mono text-[#8B949E] flex flex-col sm:flex-row justify-between gap-2">
-        <div>
-          COORDINATES: WGS-84 / UTM ZONE 44N | BALAGHAT-NAGPUR MANGANESE BELT
+      {/* Technical Footnote */}
+      <div className="bg-[#1A1A1A] border border-[#2E2E2E] rounded-lg px-4 py-3 text-[11px] text-[#666666] flex flex-col sm:flex-row justify-between gap-2">
+        <div className="font-medium text-[#888888]">
+          Coordinates: WGS-84 &bull; UTM Zone 44N &bull; Balaghat-Nagpur Manganese Belt
         </div>
-        <div className="text-[#586069]">
-          [ROADMAP NOTE: High-resolution UAV 3D photogrammetry mesh pipeline scheduled for Phase 4 rollout]
+        <div className="text-[#4A4A4A]">
+          Tile Provider: Mapbox &bull; Overlay: Leaflet.js &bull; Phase 4: UAV 3D Photogrammetry Mesh
         </div>
       </div>
     </div>

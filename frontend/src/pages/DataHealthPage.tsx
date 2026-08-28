@@ -12,70 +12,68 @@ export default function DataHealthPage() {
       try {
         const res = await api.getDataHealth();
         setDataHealth(res.data);
-      } catch (err) {
-        console.error('Failed to load data health', err);
-      } finally {
-        setIsLoading(false);
-      }
+      } catch (err) { console.error('Failed to load data health', err); }
+      finally { setIsLoading(false); }
     }
     loadHealth();
   }, []);
 
   return (
     <div className="p-6 lg:p-8 space-y-6 max-w-7xl mx-auto font-sans">
-      {/* Header */}
       <div>
-        <div className="text-[11px] font-mono uppercase tracking-widest text-[#C8A96E]">
-          System Administration &amp; Feeds
-        </div>
-        <h1 className="text-2xl font-bold text-[#E6EDF3] mt-1">{t('dataHealth.heading')}</h1>
-        <p className="text-[13px] text-[#8B949E] mt-1">{t('dataHealth.subheading')}</p>
+        <div className="text-[11px] font-semibold uppercase tracking-wider text-[#C0BDB8]">System Administration &amp; Feeds</div>
+        <h1 className="text-2xl font-bold text-[#EFEFEF] mt-1">{t('dataHealth.heading')}</h1>
+        <p className="text-[13px] text-[#888888] mt-1">{t('dataHealth.subheading')}</p>
       </div>
 
-      {/* System Status Banner */}
-      <div className="bg-[#12151B] border border-[#232834] p-5 font-mono text-[11px] flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      {/* Status Banner */}
+      <div className="bg-[#1A1A1A] border border-[#2E2E2E] p-5 rounded-lg flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <div className="text-[10px] text-[#8B949E] uppercase">OVERALL INGESTION POSTURE</div>
-          <div className="text-xl font-bold text-[#4E9F6E] mt-0.5">
+          <div className="text-[11px] text-[#777777] uppercase font-semibold tracking-wider">Overall Ingestion Posture</div>
+          <div className="text-xl font-bold text-[#4F9067] mt-1 flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-[#4F9067] animate-pulse"></span>
             {dataHealth?.overall_status || 'ALL_SYSTEMS_OPERATIONAL'}
           </div>
         </div>
-        <div className="text-[#8B949E] text-[10px] bg-[#161A22] border border-[#232834] px-3 py-1.5">
-          System Time: <strong className="text-[#E6EDF3]">{dataHealth?.system_time_utc || 'LIVE'}</strong>
+        <div className="text-[12px] text-[#888888] bg-[#1E1E1E] border border-[#2E2E2E] px-3 py-2 rounded font-medium">
+          System Time: <strong className="text-[#EFEFEF]">{dataHealth?.system_time_utc || 'Live'}</strong>
         </div>
       </div>
 
-      {/* Data Feeds Table */}
-      <div className="bg-[#12151B] border border-[#232834] font-mono text-[11px]">
-        <div className="p-4 border-b border-[#232834] bg-[#161A22] font-bold text-[#E6EDF3]">
-          ACTIVE TELEMETRY, SATELLITE &amp; GEOLOGICAL INGESTION FEEDS
+      {/* Feeds Table */}
+      <div className="bg-[#1A1A1A] border border-[#2E2E2E] rounded-lg overflow-hidden">
+        <div className="p-4 border-b border-[#2E2E2E] bg-[#1E1E1E] font-bold text-[#EFEFEF] text-[13px]">
+          Active Telemetry, Satellite &amp; Geological Ingestion Feeds
         </div>
 
         {isLoading || !dataHealth ? (
-          <div className="p-8 text-[#8B949E]">Verifying feed handshake and socket status...</div>
+          <div className="p-8 text-[13px] text-[#888888] flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-[#C0BDB8] animate-pulse"></span>
+            Verifying feed handshake and socket status...
+          </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-left">
-              <thead className="bg-[#0E1015] border-b border-[#232834] text-[#8B949E] uppercase text-[10px]">
+            <table className="w-full text-left text-[12px]">
+              <thead className="bg-[#161616] border-b border-[#2E2E2E] text-[#777777] uppercase text-[10px] tracking-wider font-semibold">
                 <tr>
                   <th className="py-2.5 px-4">Feed Name</th>
                   <th className="py-2.5 px-4">Data Source / Origin</th>
                   <th className="py-2.5 px-4">Active Records</th>
                   <th className="py-2.5 px-4">Cadence</th>
-                  <th className="py-2.5 px-4">Last Sync Timestamp</th>
+                  <th className="py-2.5 px-4">Last Sync</th>
                   <th className="py-2.5 px-4">Status</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#232834] text-[#E6EDF3]">
+              <tbody className="divide-y divide-[#2E2E2E] text-[#CCCCCC]">
                 {dataHealth.sources.map((src, idx) => (
-                  <tr key={idx} className="hover:bg-[#161A22] transition-colors">
-                    <td className="py-3 px-4 font-bold text-[#C8A96E]">{src.feed_name}</td>
-                    <td className="py-3 px-4 text-[#8B949E]">{src.source_origin}</td>
-                    <td className="py-3 px-4">{src.record_count.toLocaleString()}</td>
+                  <tr key={idx} className="hover:bg-[#1E1E1E] transition-colors">
+                    <td className="py-3 px-4 font-semibold text-[#C0BDB8]">{src.feed_name}</td>
+                    <td className="py-3 px-4 text-[#888888]">{src.source_origin}</td>
+                    <td className="py-3 px-4 font-medium">{src.record_count.toLocaleString()}</td>
                     <td className="py-3 px-4">{src.cadence}</td>
-                    <td className="py-3 px-4 text-[#8B949E]">{src.last_sync}</td>
+                    <td className="py-3 px-4 text-[#888888]">{src.last_sync}</td>
                     <td className="py-3 px-4">
-                      <span className="inline-block px-2 py-0.5 text-[9px] font-bold bg-[#4E9F6E]/20 text-[#4E9F6E] border border-[#4E9F6E]/40">
+                      <span className="inline-block px-2.5 py-0.5 text-[10px] font-semibold rounded bg-[#4F9067]/10 text-[#4F9067] border border-[#4F9067]/30">
                         {src.status}
                       </span>
                     </td>
@@ -87,43 +85,43 @@ export default function DataHealthPage() {
         )}
       </div>
 
-      {/* Model Integrity Status Strip */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 font-mono text-[11px]">
-        <div className="bg-[#12151B] border border-[#232834] p-4 space-y-2">
-          <div className="text-[#C8A96E] font-bold">[MODEL 1] GEOLOGICAL RESERVE ESTIMATOR</div>
-          <div className="text-[10px] text-[#8B949E] space-y-1">
-            <div className="flex justify-between">
-              <span>Model File:</span>
-              <span className="text-[#E6EDF3]">artifacts/reserve_model.pkl</span>
+      {/* Model Integrity */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {[
+          {
+            title: 'Model 1: Geological Reserve Estimator',
+            rows: [
+              { label: 'Model File:', val: 'artifacts/reserve_model.pkl' },
+              { label: 'Grid Blocks:', val: '10,000 blocks (100x100m)' },
+              { label: 'Kriging Variogram:', val: 'Spherical Fitted', highlight: true },
+              { label: 'Grade Accuracy (Test):', val: '92.10% (R² 0.8002)', highlight: true },
+            ],
+          },
+          {
+            title: 'Model 2: Production Shortfall Early-Warning',
+            rows: [
+              { label: 'Model File:', val: 'artifacts/shortfall_model.pkl' },
+              { label: 'SHAP Explainer:', val: 'artifacts/shap_explainer.pkl' },
+              { label: 'Decision Threshold:', val: '0.080 (F1-Optimal)' },
+              { label: 'Shortfall Recall (Test):', val: '98.52% (ROC-AUC 0.9921)', highlight: true },
+            ],
+          },
+        ].map(({ title, rows }) => (
+          <div key={title} className="bg-[#1A1A1A] border border-[#2E2E2E] p-5 space-y-3 rounded-lg">
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-[#C0BDB8]"></span>
+              <div className="text-[13px] font-bold text-[#EFEFEF]">{title}</div>
             </div>
-            <div className="flex justify-between">
-              <span>Grid Blocks:</span>
-              <span className="text-[#E6EDF3]">10,000 blocks (100x100m)</span>
-            </div>
-            <div className="flex justify-between">
-              <span>Kriging Variogram:</span>
-              <span className="text-[#4E9F6E]">Spherical Fitted</span>
+            <div className="space-y-2 text-[12px] text-[#888888]">
+              {rows.map(({ label, val, highlight }) => (
+                <div key={label} className="flex justify-between">
+                  <span>{label}</span>
+                  <span className={highlight ? 'text-[#4F9067] font-semibold' : 'text-[#EFEFEF] font-medium'}>{val}</span>
+                </div>
+              ))}
             </div>
           </div>
-        </div>
-
-        <div className="bg-[#12151B] border border-[#232834] p-4 space-y-2">
-          <div className="text-[#C8A96E] font-bold">[MODEL 2] PRODUCTION SHORTFALL EARLY-WARNING</div>
-          <div className="text-[10px] text-[#8B949E] space-y-1">
-            <div className="flex justify-between">
-              <span>Model File:</span>
-              <span className="text-[#E6EDF3]">artifacts/shortfall_model.pkl</span>
-            </div>
-            <div className="flex justify-between">
-              <span>SHAP Explainer:</span>
-              <span className="text-[#E6EDF3]">artifacts/shap_explainer.pkl</span>
-            </div>
-            <div className="flex justify-between">
-              <span>Decision Threshold:</span>
-              <span className="text-[#4E9F6E]">0.080 (F1-Optimal)</span>
-            </div>
-          </div>
-        </div>
+        ))}
       </div>
     </div>
   );

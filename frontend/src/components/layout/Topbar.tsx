@@ -15,50 +15,50 @@ export default function Topbar({ isOffline, lastSync, onOpenChat }: TopbarProps)
   };
 
   return (
-    <header className="h-14 bg-[#12151B] border-b border-[#232834] px-5 flex items-center justify-between select-none">
+    <header className="h-14 bg-[#1A1A1A] border-b border-[#2E2E2E] px-6 flex items-center justify-between select-none">
       {/* System Identification */}
       <div className="flex items-center gap-3">
-        <div className="bg-[#1D222A] border border-[#2E3544] px-2.5 py-1 text-[12px] font-mono font-bold tracking-wider text-[#C8A96E]">
+        <div className="bg-[#2A2A2A] border border-[#3C3C3C] px-2.5 py-1 rounded text-[12px] font-bold tracking-wider text-[#C0BDB8]">
           MIDAS
         </div>
-        <div className="text-[13px] text-[#E6EDF3] font-medium hidden sm:block">
+        <div className="text-[13px] text-[#D8D8D8] font-semibold hidden sm:block">
           {t('common.subtitle')}
         </div>
-        <span className="text-[#586069] hidden sm:inline">|</span>
-        <div className="text-[12px] text-[#8B949E] font-mono hidden md:block">
+        <span className="text-[#444444] hidden sm:inline">&bull;</span>
+        <div className="text-[12px] text-[#888888] font-medium hidden md:block">
           {t('common.org')}
         </div>
       </div>
 
-      {/* Center/Right Status & Controls */}
-      <div className="flex items-center gap-4">
-        {/* Sync / Offline Posture Badge */}
-        <div className="flex items-center gap-2 font-mono text-[11px] bg-[#161A22] border border-[#232834] px-3 py-1.5">
+      {/* Right: Status & Controls */}
+      <div className="flex items-center gap-3">
+        {/* Live / Offline Badge */}
+        <div className="flex items-center gap-2 text-[11px] bg-[#1E1E1E] border border-[#2E2E2E] px-3 py-1.5 rounded">
           <span
-            className={`w-2 h-2 rounded-none inline-block ${
-              isOffline ? 'bg-[#E09B3D]' : 'bg-[#4E9F6E]'
+            className={`w-2 h-2 rounded-full inline-block ${
+              isOffline ? 'bg-[#C98040]' : 'bg-[#4F9067] animate-pulse'
             }`}
           />
-          <span className="text-[#8B949E]">
+          <span className="text-[#CCCCCC] font-medium">
             {isOffline ? t('common.cachedFeed') : t('common.liveFeed')}
           </span>
           {lastSync && (
-            <span className="text-[#586069] hidden lg:inline">
+            <span className="text-[#666666] hidden lg:inline">
               ({new Date(lastSync).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })})
             </span>
           )}
         </div>
 
-        {/* Language Selector (EN / HI / MR) */}
-        <div className="flex items-center bg-[#161A22] border border-[#232834] text-[11px] font-mono p-0.5">
+        {/* Language Selector */}
+        <div className="flex items-center bg-[#1E1E1E] border border-[#2E2E2E] text-[11px] rounded p-0.5 font-medium">
           {(['en', 'hi', 'mr'] as const).map((lang) => (
             <button
               key={lang}
               onClick={() => changeLanguage(lang)}
-              className={`px-2 py-1 transition-colors ${
+              className={`px-2.5 py-1 rounded transition-all ${
                 i18n.language === lang
-                  ? 'bg-[#232834] text-[#C8A96E] font-bold'
-                  : 'text-[#8B949E] hover:text-[#E6EDF3]'
+                  ? 'bg-[#2E2E2E] text-[#EFEFEF] font-bold border border-[#3C3C3C]'
+                  : 'text-[#888888] hover:text-[#CCCCCC]'
               }`}
             >
               {lang.toUpperCase()}
@@ -66,13 +66,13 @@ export default function Topbar({ isOffline, lastSync, onOpenChat }: TopbarProps)
           ))}
         </div>
 
-        {/* NLP Assistant Toggle Button */}
+        {/* NLP Assistant Toggle */}
         <button
           onClick={onOpenChat}
-          className="bg-[#1D222A] hover:bg-[#232834] border border-[#2E3544] text-[#C8A96E] px-3 py-1.5 text-[12px] font-mono font-medium flex items-center gap-2 transition-colors"
+          className="bg-[#262626] hover:bg-[#2E2E2E] border border-[#3C3C3C] text-[#C0BDB8] px-3.5 py-1.5 rounded text-[12px] font-semibold flex items-center gap-2 transition-all"
         >
-          <span>[?]</span>
-          <span className="hidden sm:inline">{t('nav.chatbot')}</span>
+          <span className="w-1.5 h-1.5 rounded-full bg-[#4F9067]"></span>
+          <span>{t('nav.chatbot')}</span>
         </button>
       </div>
     </header>

@@ -10,58 +10,58 @@ export default function LandingPage({ onEnterDashboard }: LandingPageProps) {
   const { t } = useTranslation();
 
   return (
-    <div className="min-h-screen bg-[#0B0D10] text-[#E6EDF3] flex flex-col font-sans">
-      {/* Top Header Bar */}
-      <header className="h-16 border-b border-[#232834] px-8 flex items-center justify-between bg-[#12151B]">
+    <div className="min-h-screen bg-[#111111] text-[#EFEFEF] flex flex-col font-sans">
+      {/* Top Header */}
+      <header className="h-16 border-b border-[#2E2E2E] px-8 flex items-center justify-between bg-[#1A1A1A]">
         <div className="flex items-center gap-3">
-          <div className="bg-[#1D222A] border border-[#2E3544] px-3 py-1 text-[13px] font-mono font-bold text-[#C8A96E]">
+          <div className="bg-[#2A2A2A] border border-[#3C3C3C] px-3 py-1 rounded text-[13px] font-bold text-[#C0BDB8]">
             MIDAS
           </div>
-          <div className="text-[13px] text-[#8B949E] font-mono">
-            MOIL LIMITED | MINE DECISION SUPPORT SYSTEM
+          <div className="text-[13px] text-[#888888] font-medium">
+            MOIL Limited &bull; Mine Decision Support System
           </div>
         </div>
         <button
           onClick={onEnterDashboard}
-          className="bg-[#C8A96E] hover:bg-[#B3955A] text-[#0B0D10] px-5 py-2 text-[12px] font-mono font-bold transition-colors"
+          className="bg-[#272727] hover:bg-[#323232] border border-[#3C3C3C] text-[#EFEFEF] px-5 py-2 rounded text-[13px] font-bold tracking-wide transition-all"
         >
-          ENTER OPERATIONAL DASHBOARD &rarr;
+          Enter Operational Dashboard &rarr;
         </button>
       </header>
 
-      {/* Hero Section with Interactive 3D Terrain */}
-      <section className="border-b border-[#232834] grid grid-cols-1 lg:grid-cols-12 min-h-[580px]">
-        {/* Left Column: Factual Specifications & CTA */}
-        <div className="lg:col-span-5 p-8 lg:p-12 flex flex-col justify-between bg-[#12151B]">
+      {/* Hero: Left Text + Right 3D */}
+      <section className="border-b border-[#2E2E2E] grid grid-cols-1 lg:grid-cols-12 min-h-[580px]">
+        <div className="lg:col-span-5 p-8 lg:p-12 flex flex-col justify-between bg-[#181818]">
           <div className="space-y-4">
-            <div className="text-[11px] font-mono uppercase tracking-widest text-[#C8A96E]">
+            <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded bg-[#242424] border border-[#383838] text-[11px] font-semibold text-[#C0BDB8]">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#4F9067]"></span>
               Autonomous Mining Intelligence Core
             </div>
-            <h1 className="text-3xl lg:text-4xl font-bold tracking-tight text-[#E6EDF3] leading-tight">
+            <h1 className="text-3xl lg:text-4xl font-extrabold tracking-tight text-[#F2F0ED] leading-tight">
               Data-Fused Geological Modeling &amp; Production Early-Warning
             </h1>
-            <p className="text-[13px] text-[#8B949E] leading-relaxed">
-              MIDAS replaces manual drilling report synthesis with real-time operational telemetry, 
-              satellite spectral indices, and machine learning. Built specifically for manganese ore deposits 
+            <p className="text-[14px] text-[#888888] leading-relaxed font-normal">
+              MIDAS replaces manual drilling report synthesis with real-time operational telemetry,
+              satellite spectral indices, and machine learning. Built specifically for manganese ore deposits
               of the Sausar Supergroup.
             </p>
           </div>
 
-          {/* Core Verified Validation Metrics Strip */}
-          <div className="mt-8 pt-6 border-t border-[#232834] space-y-4 font-mono">
-            <div className="text-[10px] text-[#586069] uppercase tracking-wider">
+          {/* Validated Metrics Strip */}
+          <div className="mt-8 pt-6 border-t border-[#2E2E2E] space-y-4">
+            <div className="text-[11px] text-[#666666] uppercase font-semibold tracking-wider">
               Verified Production Validation Metrics
             </div>
             <div className="grid grid-cols-2 gap-4">
-              <div className="bg-[#161A22] border border-[#232834] p-3">
-                <div className="text-[10px] text-[#8B949E]">RESERVE GRADE ACCURACY</div>
-                <div className="text-2xl font-bold text-[#C8A96E] mt-1">92.10%</div>
-                <div className="text-[10px] text-[#586069] mt-0.5">R2 0.8002 | 5-Fold Spatial CV</div>
+              <div className="bg-[#1E1E1E] border border-[#2E2E2E] p-4 rounded-lg">
+                <div className="text-[11px] text-[#888888] font-medium">Reserve Grade Accuracy</div>
+                <div className="text-2xl font-extrabold text-[#C0BDB8] mt-1">92.10%</div>
+                <div className="text-[11px] text-[#555555] mt-0.5">R&sup2; 0.8002 &bull; 5-Fold Spatial CV</div>
               </div>
-              <div className="bg-[#161A22] border border-[#232834] p-3">
-                <div className="text-[10px] text-[#8B949E]">SHORTFALL RECALL (TEST)</div>
-                <div className="text-2xl font-bold text-[#4E9F6E] mt-1">98.52%</div>
-                <div className="text-[10px] text-[#586069] mt-0.5">133/135 Shortfalls Caught</div>
+              <div className="bg-[#1E1E1E] border border-[#2E2E2E] p-4 rounded-lg">
+                <div className="text-[11px] text-[#888888] font-medium">Shortfall Recall (Test)</div>
+                <div className="text-2xl font-extrabold text-[#4F9067] mt-1">98.52%</div>
+                <div className="text-[11px] text-[#555555] mt-0.5">133/135 Shortfalls Caught</div>
               </div>
             </div>
           </div>
@@ -69,88 +69,86 @@ export default function LandingPage({ onEnterDashboard }: LandingPageProps) {
           <div className="mt-8">
             <button
               onClick={onEnterDashboard}
-              className="w-full bg-[#1D222A] hover:bg-[#232834] border border-[#2E3544] text-[#E6EDF3] py-3 text-[13px] font-mono font-bold tracking-wider transition-colors"
+              className="w-full bg-[#222222] hover:bg-[#2A2A2A] border border-[#363636] text-[#EFEFEF] py-3.5 rounded text-[13px] font-semibold tracking-wide transition-all"
             >
-              LAUNCH MIDAS WORKSPACE
+              Launch MIDAS Workspace
             </button>
           </div>
         </div>
 
-        {/* Right Column: Interactive 3D Three.js Geological Block Mesh */}
+        {/* 3D Terrain */}
         <div className="lg:col-span-7 h-[420px] lg:h-full relative min-h-[480px]">
           <ReserveBlockTerrain3D />
         </div>
       </section>
 
-      {/* Model Architectures & Data Pipeline Section */}
-      <section className="p-8 lg:p-12 border-b border-[#232834] bg-[#0E1015]">
+      {/* ML Architecture Section */}
+      <section className="p-8 lg:p-12 border-b border-[#2E2E2E] bg-[#141414]">
         <div className="max-w-6xl mx-auto space-y-8">
           <div>
-            <div className="text-[11px] font-mono uppercase tracking-widest text-[#C8A96E]">
+            <div className="text-[11px] font-semibold uppercase tracking-wider text-[#C0BDB8]">
               System Specifications
             </div>
-            <h2 className="text-2xl font-bold text-[#E6EDF3] mt-1">
+            <h2 className="text-2xl font-bold text-[#EFEFEF] mt-1">
               Integrated Machine Learning Pipelines
             </h2>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Model 1 Overview */}
-            <div className="bg-[#12151B] border border-[#232834] p-6 space-y-4">
+            <div className="bg-[#1A1A1A] border border-[#2E2E2E] p-6 rounded-lg space-y-4">
               <div className="flex justify-between items-start">
                 <div>
-                  <div className="text-[11px] font-mono text-[#C8A96E]">MODEL 1</div>
-                  <h3 className="text-lg font-bold text-[#E6EDF3]">Geological Reserve Estimation</h3>
+                  <div className="text-[11px] font-semibold text-[#C0BDB8]">Model 1</div>
+                  <h3 className="text-lg font-bold text-[#EFEFEF]">Geological Reserve Estimation</h3>
                 </div>
-                <span className="text-[10px] font-mono bg-[#161A22] border border-[#232834] px-2 py-1 text-[#8B949E]">
-                  SPATIAL REGRESSOR
+                <span className="text-[11px] bg-[#222222] border border-[#333333] px-2.5 py-1 rounded text-[#888888] font-medium">
+                  Spatial Regressor
                 </span>
               </div>
-              <p className="text-[12px] text-[#8B949E] leading-relaxed">
-                Hybrid spatial architecture combining XGBoost with Ordinary Kriging (PyKrige). Predicts in-situ manganese ore grade (% Mn), seam thickness (m), and deposit tonnage (MT) with 95% confidence intervals across 100x100m blocks.
+              <p className="text-[13px] text-[#888888] leading-relaxed">
+                Hybrid spatial architecture combining XGBoost with Ordinary Kriging (PyKrige). Predicts in-situ manganese ore grade, seam thickness, and deposit tonnage with 95% confidence intervals across 100x100m blocks.
               </p>
-              <div className="pt-3 border-t border-[#232834] font-mono text-[11px] space-y-1.5 text-[#8B949E]">
+              <div className="pt-3 border-t border-[#2E2E2E] text-[12px] space-y-2 text-[#777777]">
                 <div className="flex justify-between">
-                  <span>Ore Grade R2:</span>
-                  <span className="text-[#E6EDF3]">0.8002 (+/- 0.0635)</span>
+                  <span>Ore Grade R&sup2;:</span>
+                  <span className="text-[#EFEFEF] font-medium">0.8002 (&plusmn; 0.0635)</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Grade Mean Error:</span>
-                  <span className="text-[#E6EDF3]">2.216% Mn (92.10% accuracy)</span>
+                  <span className="text-[#EFEFEF] font-medium">2.216% Mn (92.10% accuracy)</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Validation Strategy:</span>
-                  <span className="text-[#C8A96E]">5-Fold Spatial Block CV</span>
+                  <span className="text-[#C0BDB8] font-semibold">5-Fold Spatial Block CV</span>
                 </div>
               </div>
             </div>
 
-            {/* Model 2 Overview */}
-            <div className="bg-[#12151B] border border-[#232834] p-6 space-y-4">
+            <div className="bg-[#1A1A1A] border border-[#2E2E2E] p-6 rounded-lg space-y-4">
               <div className="flex justify-between items-start">
                 <div>
-                  <div className="text-[11px] font-mono text-[#C8A96E]">MODEL 2</div>
-                  <h3 className="text-lg font-bold text-[#E6EDF3]">Production Shortfall Early-Warning</h3>
+                  <div className="text-[11px] font-semibold text-[#C0BDB8]">Model 2</div>
+                  <h3 className="text-lg font-bold text-[#EFEFEF]">Production Shortfall Early-Warning</h3>
                 </div>
-                <span className="text-[10px] font-mono bg-[#161A22] border border-[#232834] px-2 py-1 text-[#8B949E]">
-                  COST-SENSITIVE CLASSIFIER
+                <span className="text-[11px] bg-[#222222] border border-[#333333] px-2.5 py-1 rounded text-[#888888] font-medium">
+                  Cost-Sensitive Classifier
                 </span>
               </div>
-              <p className="text-[12px] text-[#8B949E] leading-relaxed">
+              <p className="text-[13px] text-[#888888] leading-relaxed">
                 Cost-sensitive XGBoost classifier paired with SHAP TreeExplainer. Monitors daily extraction rates, equipment breakdown hours, monsoon precipitation, and workforce headcount to output shortfall probabilities and prescriptive directives.
               </p>
-              <div className="pt-3 border-t border-[#232834] font-mono text-[11px] space-y-1.5 text-[#8B949E]">
+              <div className="pt-3 border-t border-[#2E2E2E] text-[12px] space-y-2 text-[#777777]">
                 <div className="flex justify-between">
                   <span>Overall Accuracy:</span>
-                  <span className="text-[#E6EDF3]">94.67% (Holdout Test)</span>
+                  <span className="text-[#EFEFEF] font-medium">94.67% (Holdout Test)</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Shortfall Recall:</span>
-                  <span className="text-[#4E9F6E]">98.52% (Sensitivity)</span>
+                  <span className="text-[#4F9067] font-bold">98.52% (Sensitivity)</span>
                 </div>
                 <div className="flex justify-between">
                   <span>ROC-AUC Metric:</span>
-                  <span className="text-[#E6EDF3]">0.9921</span>
+                  <span className="text-[#EFEFEF] font-medium">0.9921</span>
                 </div>
               </div>
             </div>
@@ -158,10 +156,9 @@ export default function LandingPage({ onEnterDashboard }: LandingPageProps) {
         </div>
       </section>
 
-      {/* Minimal Factual Footer */}
-      <footer className="py-6 px-8 bg-[#0B0D10] border-t border-[#232834] text-[11px] font-mono text-[#586069] flex flex-col sm:flex-row justify-between items-center gap-4">
-        <div>MIDAS DEPLOYMENT VERSION 1.0.0 | MOIL LIMITED</div>
-        <div>DATA SOURCES: SCADA TELEMETRY, SENTINEL-2, IBM STATUTORY REGISTRY</div>
+      <footer className="py-6 px-8 bg-[#111111] border-t border-[#2E2E2E] text-[12px] text-[#555555] flex flex-col sm:flex-row justify-between items-center gap-4">
+        <div>MIDAS v1.0.0 &bull; MOIL Limited</div>
+        <div>Data Sources: SCADA Telemetry, Sentinel-2, IBM Statutory Registry</div>
       </footer>
     </div>
   );
