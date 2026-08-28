@@ -48,8 +48,8 @@ export class GroqService {
 
   constructor() {
     this.apiKey =
-      localStorage.getItem('midas_groq_api_key') ||
       (typeof import.meta !== 'undefined' && import.meta.env?.VITE_GROQ_API_KEY) ||
+      localStorage.getItem('midas_groq_api_key') ||
       '';
     this.model =
       (typeof import.meta !== 'undefined' && import.meta.env?.VITE_GROQ_MODEL) ||
@@ -57,6 +57,11 @@ export class GroqService {
     this.baseUrl =
       (typeof import.meta !== 'undefined' && import.meta.env?.VITE_GROQ_BASE_URL) ||
       'https://api.groq.com/openai/v1';
+
+    // Auto-persist active environment key to localStorage for client sessions
+    if (this.apiKey && typeof localStorage !== 'undefined' && !localStorage.getItem('midas_groq_api_key')) {
+      localStorage.setItem('midas_groq_api_key', this.apiKey);
+    }
   }
 
   public setApiKey(key: string) {
