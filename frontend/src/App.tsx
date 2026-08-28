@@ -1,17 +1,30 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense, lazy } from 'react';
+import { configureBoneyard } from 'boneyard-js/react';
 import Topbar from './components/layout/Topbar';
 import Sidebar, { PageId } from './components/layout/Sidebar';
-import ChatbotDrawer from './components/chatbot/ChatbotDrawer';
-import LandingPage from './pages/LandingPage';
-import OverviewPage from './pages/OverviewPage';
-import ReserveMapPage from './pages/ReserveMapPage';
-import ProductionTrendsPage from './pages/ProductionTrendsPage';
-import RiskRootCausePage from './pages/RiskRootCausePage';
-import RecommendedActionsPage from './pages/RecommendedActionsPage';
-import DigitalTwinPage from './pages/DigitalTwinPage';
-import DataHealthPage from './pages/DataHealthPage';
+import PageSkeletonLoader from './components/layout/PageSkeletonLoader';
 import { getLastSyncTime } from './api/client';
 import './i18n';
+
+// Configure Boneyard global skeleton styling to match graphite design system
+configureBoneyard({
+  darkColor: '#16161A',
+  darkShimmerColor: '#24242A',
+  animate: 'shimmer',
+  stagger: 60,
+  transition: 300,
+});
+
+// Code-split and lazy load all pages & heavy components for instant initial load
+const LandingPage = lazy(() => import('./pages/LandingPage'));
+const OverviewPage = lazy(() => import('./pages/OverviewPage'));
+const ReserveMapPage = lazy(() => import('./pages/ReserveMapPage'));
+const ProductionTrendsPage = lazy(() => import('./pages/ProductionTrendsPage'));
+const RiskRootCausePage = lazy(() => import('./pages/RiskRootCausePage'));
+const RecommendedActionsPage = lazy(() => import('./pages/RecommendedActionsPage'));
+const DigitalTwinPage = lazy(() => import('./pages/DigitalTwinPage'));
+const DataHealthPage = lazy(() => import('./pages/DataHealthPage'));
+const ChatbotDrawer = lazy(() => import('./components/chatbot/ChatbotDrawer'));
 
 export default function App() {
   const [activePage, setActivePage] = useState<PageId>('landing');
@@ -42,18 +55,22 @@ export default function App() {
     setActivePage('risk');
   };
 
-  // When active page is landing, render full landing view with direct entry to dashboard
+  // Full-screen Landing Experience
   if (activePage === 'landing') {
     return (
-      <div className="min-h-screen bg-[#0B0D10]">
-        <LandingPage onEnterDashboard={() => setActivePage('overview')} />
-        <ChatbotDrawer isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
+      <div className="min-h-screen bg-[#0D0D10]">
+        <Suspense fallback={<PageSkeletonLoader />}>
+          <LandingPage onEnterDashboard={() => setActivePage('overview')} />
+          {isChatOpen && (
+            <ChatbotDrawer isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
+          )}
+        </Suspense>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#0B0D10] text-[#E6EDF3] font-sans antialiased select-none">
+    <div className="min-h-screen flex flex-col bg-[#0D0D10] text-[#EFEFEF] font-sans antialiased select-none">
       {/* Top Header */}
       <Topbar
         isOffline={isOffline}
@@ -66,20 +83,28 @@ export default function App() {
         {/* Persistent Navigation Sidebar */}
         <Sidebar activePage={activePage} onNavigate={(p) => setActivePage(p)} />
 
-        {/* Dynamic Page Viewport */}
-        <main className="flex-1 overflow-y-auto bg-[#0B0D10]">
-          {activePage === 'overview' && <OverviewPage onSelectMine={handleSelectMine} />}
-          {activePage === 'reserve' && <ReserveMapPage />}
-          {activePage === 'trends' && <ProductionTrendsPage selectedMineId={selectedMineId} />}
-          {activePage === 'risk' && <RiskRootCausePage selectedMineId={selectedMineId} />}
-          {activePage === 'actions' && <RecommendedActionsPage />}
-          {activePage === 'digitalTwin' && <DigitalTwinPage />}
-          {activePage === 'dataHealth' && <DataHealthPage />}
+        {/* Dynamic Page Viewport with Smooth Fade Transitions */}
+        <main className="flex-1 overflow-y-auto bg-[#0D0D10]">
+          <Suspense fallback={<PageSkeletonLoader />}>
+            <div key={activePage} className="animate-fade-in">
+              {activePage === 'overview' && <OverviewPage onSelectMine={handleSelectMine} />}
+              {activePage === 'reserve' && <ReserveMapPage />}
+              {activePage === 'trends' && <ProductionTrendsPage selectedMineId={selectedMineId} />}
+              {activePage === 'risk' && <RiskRootCausePage selectedMineId={selectedMineId} />}
+              {activePage === 'actions' && <RecommendedActionsPage />}
+              {activePage === 'digitalTwin' && <DigitalTwinPage />}
+              {activePage === 'dataHealth' && <DataHealthPage />}
+            </div>
+          </Suspense>
         </main>
       </div>
 
-      {/* Persistent Chatbot Drawer */}
-      <ChatbotDrawer isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
+      {/* Lazy Chatbot Drawer */}
+      {isChatOpen && (
+        <Suspense fallback={null}>
+          <ChatbotDrawer isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
+        </Suspense>
+      )}
     </div>
   );
 }

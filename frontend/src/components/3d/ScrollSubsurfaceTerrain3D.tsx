@@ -303,22 +303,6 @@ export default function ScrollSubsurfaceTerrain3D({ scrollProgress }: ScrollSubs
     <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
       {/* Three.js Canvas */}
       <div ref={containerRef} className="w-full h-full" />
-
-      {/* Floating 3D HUD Stage Indicator */}
-      <div className="absolute top-20 right-6 sm:right-10 bg-[#161618]/85 backdrop-blur-md border border-[#2A2A2E] px-3.5 py-2.5 rounded-lg shadow-xl text-[11px] text-[#A0A0A0] flex flex-col gap-1 pointer-events-auto select-none">
-        <div className="flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-[#4F9067] animate-pulse"></span>
-          <span className="text-[#EFEFEF] font-bold tracking-wide">
-            {activeStage === 0 && '3D Hero Synclinorium'}
-            {activeStage === 1 && 'Subsurface Borehole Assays'}
-            {activeStage === 2 && 'Real-Time Mine Telemetry'}
-            {activeStage === 3 && 'Spatial Decision Grid'}
-          </span>
-        </div>
-        <div className="text-[10px] text-[#666666]">
-          Scroll to explore subterranean orebody &amp; AI models
-        </div>
-      </div>
     </div>
   );
 }

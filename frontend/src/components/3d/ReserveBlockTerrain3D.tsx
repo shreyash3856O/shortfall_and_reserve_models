@@ -155,18 +155,7 @@ export default function ReserveBlockTerrain3D() {
     <div className="w-full h-full relative bg-[#111111] border border-[#2E2E2E] overflow-hidden">
       <div ref={containerRef} className="w-full h-full cursor-grab active:cursor-grabbing" />
 
-      {/* HUD — top left */}
-      <div className="absolute top-4 left-4 bg-[#1A1A1A]/90 backdrop-blur-md border border-[#333333] px-3.5 py-2.5 rounded shadow-lg pointer-events-none select-none">
-        <div className="flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-[#4F9067] animate-pulse"></span>
-          <div className="text-[#EFEFEF] font-semibold text-xs tracking-wide">
-            Balaghat Orebody 3D Model
-          </div>
-        </div>
-        <div className="text-[#888888] text-[11px] mt-0.5 font-normal">
-          Braunite / Gondite Synclinorium Mesh (XGB + Kriging)
-        </div>
-      </div>
+
 
       {/* Legend — bottom right */}
       <div className="absolute bottom-4 right-4 bg-[#1A1A1A]/90 backdrop-blur-md border border-[#333333] px-3.5 py-2 rounded shadow-lg text-[11px] text-[#BBBBBB] flex items-center gap-4 pointer-events-none select-none">

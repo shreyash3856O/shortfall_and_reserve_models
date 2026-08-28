@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Skeleton } from 'boneyard-js/react';
 import { api, MineRiskSummary, ReserveSummaryItem } from '../api/client';
+import { OverviewSkeleton } from '../components/layout/ViewSkeletons';
 
 interface OverviewPageProps {
   onSelectMine: (mineId: string) => void;
@@ -12,24 +14,58 @@ export default function OverviewPage({ onSelectMine }: OverviewPageProps) {
   const [reserveSummary, setReserveSummary] = useState<ReserveSummaryItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [filterTab, setFilterTab] = useState<'ALL' | 'RISK' | 'OK'>('ALL');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [quickInspectMine, setQuickInspectMine] = useState<MineRiskSummary | null>(null);
+
+  const loadData = async () => {
+    try {
+      const [minesRes, reserveRes] = await Promise.all([
+        api.getShortfallMines(),
+        api.getReserveSummary(),
+      ]);
+      setMines(minesRes.data);
+      setReserveSummary(reserveRes.data);
+    } catch (err) {
+      console.error('Failed to load overview data', err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
-    async function loadData() {
-      try {
-        const [minesRes, reserveRes] = await Promise.all([
-          api.getShortfallMines(),
-          api.getReserveSummary(),
-        ]);
-        setMines(minesRes.data);
-        setReserveSummary(reserveRes.data);
-      } catch (err) {
-        console.error('Failed to load overview data', err);
-      } finally {
-        setIsLoading(false);
-      }
-    }
     loadData();
   }, []);
+
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    await loadData();
+    setTimeout(() => setIsRefreshing(false), 600);
+  };
+
+  const exportReportCSV = () => {
+    const headers = ['Mine ID', 'Mine Name', 'Risk Level', 'Shortfall Proba %', 'MTD Actual (T)', 'Monthly Target (T)', 'Daily Avg (T)', 'Downtime (hrs)', 'Primary Cause'];
+    const rows = mines.map((m) => [
+      m.mine_id,
+      `"${m.mine_name}"`,
+      m.risk_level,
+      m.shortfall_probability,
+      m.mtd_actual_tonnes,
+      m.target_tonnes,
+      m.daily_avg_tonnes,
+      m.equipment_downtime_hrs,
+      `"${m.main_reason}"`,
+    ]);
+    const csvContent = [headers.join(','), ...rows.map((r) => r.join(','))].join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', `MOIL_MIDAS_Shift_Report_${new Date().toISOString().slice(0, 10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   const totalActual = mines.reduce((acc, m) => acc + m.mtd_actual_tonnes, 0);
   const totalTarget = mines.reduce((acc, m) => acc + m.target_tonnes, 0);
@@ -39,237 +75,388 @@ export default function OverviewPage({ onSelectMine }: OverviewPageProps) {
   const highRiskCount = mines.filter((m) => m.risk_level === 'HIGH').length;
   const totalReserveOre = reserveSummary.find((r) => r.zone_id === -1)?.tonnage_mt || 4.781;
 
-  const filteredMines = filterTab === 'RISK' ? atRiskMines : filterTab === 'OK' ? onTrackMines : mines;
-
-  if (isLoading) {
-    return (
-      <div className="p-8 text-[13px] text-[#888888] flex items-center justify-center min-h-[400px] gap-2">
-        <span className="w-2 h-2 rounded-full bg-[#4F9067] animate-pulse"></span>
-        <span>{t('common.loading')}</span>
-      </div>
-    );
-  }
+  const filteredMines = mines.filter((m) => {
+    const matchesFilter =
+      filterTab === 'RISK' ? m.risk_level === 'HIGH' || m.risk_level === 'MEDIUM' :
+      filterTab === 'OK' ? m.risk_level === 'LOW' : true;
+    const matchesSearch =
+      m.mine_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      m.mine_id.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      m.main_reason.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesFilter && matchesSearch;
+  });
 
   return (
-    <div className="p-6 lg:p-8 space-y-6 max-w-6xl mx-auto font-sans">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
-        <div>
-          <h1 className="text-2xl font-bold text-[#EFEFEF]">{t('overview.heading')}</h1>
-          <p className="text-[13px] text-[#888888] mt-0.5">{t('overview.subheading')}</p>
-        </div>
-        <div className="text-[11px] text-[#777777] bg-[#1A1A1A] border border-[#2E2E2E] px-3 py-1.5 rounded-md flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-[#4F9067] animate-pulse"></span>
-          <span>Live Telemetry Active</span>
-        </div>
-      </div>
-
-      {/* 4 Clean Metric Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* Metric 1: Monthly Production Progress */}
-        <div className="bg-[#181818] border border-[#2A2A2A] p-5 rounded-lg space-y-3">
-          <div className="flex justify-between items-center text-[#888888] text-[12px] font-medium">
-            <span>{t('overview.activeProduction')}</span>
-            <span className="text-[#C0BDB8] font-bold">{percentAchieved}%</span>
-          </div>
-          <div className="text-2xl font-bold text-[#EFEFEF]">
-            {totalActual.toLocaleString()} <span className="text-[13px] text-[#666666] font-normal">/ {totalTarget.toLocaleString()} T</span>
-          </div>
-          <div className="w-full bg-[#242424] rounded-full h-1.5 overflow-hidden">
-            <div
-              className="bg-[#4F9067] h-1.5 rounded-full transition-all duration-500"
-              style={{ width: `${Math.min(percentAchieved, 100)}%` }}
-            ></div>
-          </div>
-        </div>
-
-        {/* Metric 2: Mines Status */}
-        <div className="bg-[#181818] border border-[#2A2A2A] p-5 rounded-lg space-y-3">
-          <div className="text-[#888888] text-[12px] font-medium">
-            {t('overview.minesAtRisk')}
-          </div>
-          <div className="text-2xl font-bold text-[#EFEFEF]">
-            <span className={atRiskMines.length > 0 ? 'text-[#C98040]' : 'text-[#4F9067]'}>
-              {atRiskMines.length}
-            </span>
-            <span className="text-[13px] text-[#666666] font-normal"> of {mines.length} Units</span>
-          </div>
-          <div className="text-[11px] text-[#777777] flex items-center gap-1.5">
-            <span className={`w-1.5 h-1.5 rounded-full ${highRiskCount > 0 ? 'bg-[#D94F4F]' : 'bg-[#4F9067]'}`}></span>
-            <span>{highRiskCount} High Risk, {atRiskMines.length - highRiskCount} Medium Risk</span>
-          </div>
-        </div>
-
-        {/* Metric 3: Total Reserves */}
-        <div className="bg-[#181818] border border-[#2A2A2A] p-5 rounded-lg space-y-3">
-          <div className="text-[#888888] text-[12px] font-medium">
-            {t('overview.totalReserves')}
-          </div>
-          <div className="text-2xl font-bold text-[#EFEFEF]">
-            {totalReserveOre.toFixed(3)} <span className="text-[13px] text-[#666666] font-normal">MT</span>
-          </div>
-          <div className="text-[11px] text-[#777777]">
-            Proven Manganese Ore (&ge;32% Mn)
-          </div>
-        </div>
-
-        {/* Metric 4: AI Reliability */}
-        <div className="bg-[#181818] border border-[#2A2A2A] p-5 rounded-lg space-y-3">
-          <div className="text-[#888888] text-[12px] font-medium">
-            {t('overview.modelReliability')}
-          </div>
-          <div className="text-2xl font-bold text-[#4F9067]">
-            98.5%
-          </div>
-          <div className="text-[11px] text-[#777777]">
-            Shortfall Catch Rate (Holdout Test)
-          </div>
-        </div>
-      </div>
-
-      {/* Alert Callout for Quick Action */}
-      {highRiskCount > 0 && (
-        <div className="bg-[#1F1818] border border-[#3E2525] p-4 rounded-lg flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-[#D94F4F]/15 border border-[#D94F4F]/30 flex items-center justify-center text-[#D94F4F] font-bold text-sm flex-shrink-0">
-              !
+    <Skeleton
+      name="overview-dashboard-v2"
+      loading={isLoading}
+      fallback={<OverviewSkeleton />}
+    >
+      <div className="p-6 lg:p-8 space-y-6 max-w-6xl mx-auto font-sans animate-fade-in">
+        {/* Header with Live Actions */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 animate-fade-in-up">
+          <div>
+            <div className="flex items-center gap-2.5">
+              <h1 className="text-2xl font-bold text-[#EFEFEF] tracking-tight">{t('overview.heading')}</h1>
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#4F9067]/15 text-[#4F9067] border border-[#4F9067]/30 flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#4F9067] animate-ping inline-block"></span>
+                LIVE SCADA
+              </span>
             </div>
-            <div>
-              <div className="text-[13px] font-bold text-[#EFEFEF]">
-                {highRiskCount} production units require attention
-              </div>
-              <div className="text-[12px] text-[#A08888]">
-                Production pace is below monthly mandate due to equipment downtime and weather.
-              </div>
-            </div>
+            <p className="text-[13px] text-[#888888] mt-0.5">{t('overview.subheading')}</p>
           </div>
-          <button
-            onClick={() => setFilterTab('RISK')}
-            className="bg-[#2C1D1D] hover:bg-[#382424] border border-[#4F2B2B] text-[#E5A5A5] px-3.5 py-1.5 rounded text-[12px] font-semibold transition-colors flex-shrink-0"
-          >
-            Review At-Risk Units &rarr;
-          </button>
-        </div>
-      )}
 
-      {/* Clean Mine List Table with Filter Tabs */}
-      <div className="bg-[#181818] border border-[#2A2A2A] rounded-lg overflow-hidden">
-        {/* Table Header & Filter Tabs */}
-        <div className="p-4 border-b border-[#2A2A2A] flex flex-wrap justify-between items-center gap-3 bg-[#1C1C1C]">
-          <div className="text-[14px] font-bold text-[#EFEFEF]">
-            {t('overview.allMinesTable')}
-          </div>
-          <div className="flex items-center gap-1 bg-[#141414] border border-[#2E2E2E] p-0.5 rounded-md text-[11px] font-semibold">
+          <div className="flex items-center gap-2.5">
+            {/* Quick Refresh Button */}
             <button
-              onClick={() => setFilterTab('ALL')}
-              className={`px-3 py-1 rounded transition-colors ${
-                filterTab === 'ALL'
-                  ? 'bg-[#282828] text-[#EFEFEF] shadow-sm'
-                  : 'text-[#777777] hover:text-[#CCCCCC]'
-              }`}
+              onClick={handleRefresh}
+              disabled={isRefreshing}
+              className="bg-[#16161A] hover:bg-[#202028] border border-[#24242A] text-[#C0BDB8] hover:text-white px-3 py-1.5 rounded-lg text-[12px] font-medium transition-all flex items-center gap-1.5 shadow-sm"
+              title="Refresh telemetry streams"
             >
-              All Mines ({mines.length})
+              <svg className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin text-[#4F9067]' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+              <span>{isRefreshing ? 'Syncing...' : 'Sync Data'}</span>
             </button>
+
+            {/* Export Shift Report Button */}
+            <button
+              onClick={exportReportCSV}
+              className="bg-[#202026] hover:bg-[#282832] border border-[#2E2E38] text-[#EFEFEF] px-3.5 py-1.5 rounded-lg text-[12px] font-semibold transition-all flex items-center gap-1.5 shadow-sm"
+            >
+              <svg className="w-3.5 h-3.5 text-[#C0BDB8]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              <span>Export CSV</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Operational Pulse Bar (Pit & Shift Telemetry) */}
+        <div className="bg-[#141418] border border-[#222228] px-4 py-2.5 rounded-xl text-[11px] text-[#888888] flex flex-wrap items-center justify-between gap-3 shadow-inner">
+          <div className="flex items-center gap-4">
+            <span className="flex items-center gap-1.5 text-[#CCCCCC]">
+              <span className="w-2 h-2 rounded-full bg-[#4F9067]"></span>
+              <strong>Active Shift A</strong> (06:00 – 14:00)
+            </span>
+            <span className="text-[#44444A] hidden sm:inline">&bull;</span>
+            <span className="hidden sm:inline">Fleet Telemetry: <strong className="text-[#4F9067]">94.2% Online</strong> (48/51 units)</span>
+            <span className="text-[#44444A] hidden md:inline">&bull;</span>
+            <span className="hidden md:inline">Balaghat Weather: <strong>28&deg;C &bull; 12mm Rain</strong></span>
+          </div>
+          <div className="text-[#666666] font-mono text-[10px]">
+            WGS-84 &bull; Sausar Manganese Belt
+          </div>
+        </div>
+
+        {/* 4 Interactive KPI Cards with Glowing Borders */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {/* Card 1: Production Progress */}
+          <div className="group bg-[#16161A] hover:bg-[#1A1A20] border border-[#24242A] hover:border-[#4F9067]/40 p-5 rounded-2xl space-y-3 transition-all duration-300 shadow-sm animate-fade-in-up stagger-1 relative overflow-hidden">
+            <div className="flex justify-between items-center text-[#888888] text-[12px] font-medium">
+              <span>{t('overview.activeProduction')}</span>
+              <span className="text-[#4F9067] font-bold text-[11px] bg-[#4F9067]/10 px-2 py-0.5 rounded-md">
+                {percentAchieved}% of Target
+              </span>
+            </div>
+            <div className="text-2xl font-extrabold text-[#EFEFEF]">
+              {totalActual.toLocaleString()} <span className="text-[13px] text-[#666666] font-normal">/ {totalTarget.toLocaleString()} T</span>
+            </div>
+            <div className="w-full bg-[#202026] rounded-full h-1.5 overflow-hidden">
+              <div
+                className="bg-gradient-to-r from-[#3D7852] to-[#4F9067] h-1.5 rounded-full transition-all duration-1000 ease-out"
+                style={{ width: `${Math.min(percentAchieved, 100)}%` }}
+              ></div>
+            </div>
+          </div>
+
+          {/* Card 2: Mines Risk */}
+          <div className="group bg-[#16161A] hover:bg-[#1A1A20] border border-[#24242A] hover:border-[#C98040]/40 p-5 rounded-2xl space-y-3 transition-all duration-300 shadow-sm animate-fade-in-up stagger-2 relative overflow-hidden">
+            <div className="flex justify-between items-center text-[#888888] text-[12px] font-medium">
+              <span>{t('overview.minesAtRisk')}</span>
+              <span className={`text-[11px] font-bold px-2 py-0.5 rounded-md ${
+                atRiskMines.length > 0 ? 'bg-[#C98040]/15 text-[#C98040]' : 'bg-[#4F9067]/15 text-[#4F9067]'
+              }`}>
+                {atRiskMines.length > 0 ? `${atRiskMines.length} Flagged` : 'All Clean'}
+              </span>
+            </div>
+            <div className="text-2xl font-extrabold text-[#EFEFEF]">
+              <span className={atRiskMines.length > 0 ? 'text-[#C98040]' : 'text-[#4F9067]'}>
+                {atRiskMines.length}
+              </span>
+              <span className="text-[13px] text-[#666666] font-normal"> of {mines.length} Units</span>
+            </div>
+            <div className="text-[11px] text-[#777777] flex items-center gap-1.5">
+              <span className={`w-1.5 h-1.5 rounded-full ${highRiskCount > 0 ? 'bg-[#D94F4F]' : 'bg-[#4F9067]'}`}></span>
+              <span>{highRiskCount} High Risk, {atRiskMines.length - highRiskCount} Moderate Risk</span>
+            </div>
+          </div>
+
+          {/* Card 3: Total Reserves */}
+          <div className="group bg-[#16161A] hover:bg-[#1A1A20] border border-[#24242A] hover:border-[#C0BDB8]/40 p-5 rounded-2xl space-y-3 transition-all duration-300 shadow-sm animate-fade-in-up stagger-3 relative overflow-hidden">
+            <div className="flex justify-between items-center text-[#888888] text-[12px] font-medium">
+              <span>{t('overview.totalReserves')}</span>
+              <span className="text-[#C0BDB8] font-bold text-[11px] bg-[#C0BDB8]/10 px-2 py-0.5 rounded-md">
+                Proved 111
+              </span>
+            </div>
+            <div className="text-2xl font-extrabold text-[#EFEFEF]">
+              {totalReserveOre.toFixed(3)} <span className="text-[13px] text-[#666666] font-normal">MT</span>
+            </div>
+            <div className="text-[11px] text-[#777777]">
+              In-situ Cutoff &ge;32% Mn &bull; Kriging Mesh
+            </div>
+          </div>
+
+          {/* Card 4: Model Accuracy */}
+          <div className="group bg-[#16161A] hover:bg-[#1A1A20] border border-[#24242A] hover:border-[#4F9067]/40 p-5 rounded-2xl space-y-3 transition-all duration-300 shadow-sm animate-fade-in-up stagger-4 relative overflow-hidden">
+            <div className="flex justify-between items-center text-[#888888] text-[12px] font-medium">
+              <span>{t('overview.modelReliability')}</span>
+              <span className="text-[#4F9067] font-bold text-[11px] bg-[#4F9067]/10 px-2 py-0.5 rounded-md">
+                0.9921 AUC
+              </span>
+            </div>
+            <div className="text-2xl font-extrabold text-[#4F9067]">
+              98.5%
+            </div>
+            <div className="text-[11px] text-[#777777]">
+              133/135 Deficits Detected (Test Holdout)
+            </div>
+          </div>
+        </div>
+
+        {/* High Risk Alert Banner */}
+        {highRiskCount > 0 && (
+          <div className="bg-gradient-to-r from-[#201414] to-[#161416] border border-[#3E2424] p-4 rounded-2xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 transition-all shadow-md animate-fade-in-up stagger-4">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-full bg-[#D94F4F]/15 border border-[#D94F4F]/30 flex items-center justify-center text-[#D94F4F] font-bold text-xs flex-shrink-0">
+                !
+              </div>
+              <div>
+                <div className="text-[13px] font-bold text-[#EFEFEF]">
+                  {highRiskCount} production units require attention
+                </div>
+                <div className="text-[12px] text-[#A08888]">
+                  Production pace is below mandate due to excavator breakdown and rain front.
+                </div>
+              </div>
+            </div>
             <button
               onClick={() => setFilterTab('RISK')}
-              className={`px-3 py-1 rounded transition-colors ${
-                filterTab === 'RISK'
-                  ? 'bg-[#282828] text-[#C98040] shadow-sm'
-                  : 'text-[#777777] hover:text-[#CCCCCC]'
-              }`}
+              className="bg-[#2A1818] hover:bg-[#361E1E] border border-[#4E2424] text-[#E5A5A5] px-4 py-1.5 rounded-lg text-[12px] font-semibold transition-all duration-200 flex-shrink-0"
             >
-              Needs Attention ({atRiskMines.length})
+              Filter Flagged Units &rarr;
             </button>
-            <button
-              onClick={() => setFilterTab('OK')}
-              className={`px-3 py-1 rounded transition-colors ${
-                filterTab === 'OK'
-                  ? 'bg-[#282828] text-[#4F9067] shadow-sm'
-                  : 'text-[#777777] hover:text-[#CCCCCC]'
-              }`}
-            >
-              On Track ({onTrackMines.length})
-            </button>
+          </div>
+        )}
+
+        {/* Mine Production Status Section with Live Search & Filter Tabs */}
+        <div className="bg-[#16161A] border border-[#24242A] rounded-2xl overflow-hidden shadow-sm animate-fade-in-up stagger-5">
+          {/* Controls Bar: Search + Tabs */}
+          <div className="p-4 border-b border-[#222228] flex flex-wrap justify-between items-center gap-3 bg-[#18181D]">
+            {/* Search Input */}
+            <div className="relative min-w-[240px] flex-1 sm:flex-initial">
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search mine, ID, or root cause..."
+                className="w-full bg-[#121215] border border-[#24242A] rounded-lg pl-8 pr-3 py-1.5 text-[12px] text-[#EFEFEF] focus:outline-none focus:border-[#4F9067]/60 placeholder-[#666666] transition-all"
+              />
+              <svg className="w-3.5 h-3.5 text-[#666666] absolute left-2.5 top-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
+
+            {/* Filter Tabs */}
+            <div className="flex items-center gap-1 bg-[#121215] border border-[#24242A] p-0.5 rounded-lg text-[11px] font-semibold">
+              <button
+                onClick={() => setFilterTab('ALL')}
+                className={`px-3 py-1 rounded-md transition-all duration-200 ${
+                  filterTab === 'ALL'
+                    ? 'bg-[#222228] text-[#EFEFEF] shadow-sm'
+                    : 'text-[#777777] hover:text-[#CCCCCC]'
+                }`}
+              >
+                All ({mines.length})
+              </button>
+              <button
+                onClick={() => setFilterTab('RISK')}
+                className={`px-3 py-1 rounded-md transition-all duration-200 ${
+                  filterTab === 'RISK'
+                    ? 'bg-[#222228] text-[#C98040] shadow-sm'
+                    : 'text-[#777777] hover:text-[#CCCCCC]'
+                }`}
+              >
+                Needs Attention ({atRiskMines.length})
+              </button>
+              <button
+                onClick={() => setFilterTab('OK')}
+                className={`px-3 py-1 rounded-md transition-all duration-200 ${
+                  filterTab === 'OK'
+                    ? 'bg-[#222228] text-[#4F9067] shadow-sm'
+                    : 'text-[#777777] hover:text-[#CCCCCC]'
+                }`}
+              >
+                On Track ({onTrackMines.length})
+              </button>
+            </div>
+          </div>
+
+          {/* Mine Rows */}
+          <div className="divide-y divide-[#202026]">
+            {filteredMines.length === 0 ? (
+              <div className="p-8 text-center text-[#777777] text-[13px]">
+                No production units match your search query "{searchQuery}".
+              </div>
+            ) : (
+              filteredMines.map((m, idx) => {
+                const isHigh = m.risk_level === 'HIGH';
+                const isMed = m.risk_level === 'MEDIUM';
+                const minePercent = Math.round((m.mtd_actual_tonnes / Math.max(m.target_tonnes, 1)) * 100);
+
+                return (
+                  <div
+                    key={m.mine_id}
+                    style={{ animationDelay: `${idx * 35}ms` }}
+                    className="p-4 sm:p-5 hover:bg-[#1A1A20] transition-colors duration-200 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 animate-fade-in-up"
+                  >
+                    {/* Left: Identity */}
+                    <div className="flex items-start sm:items-center gap-3.5 min-w-[210px]">
+                      <div className="w-10 h-10 rounded-xl bg-[#202026] border border-[#2C2C34] text-[#C0BDB8] font-bold text-xs flex items-center justify-center flex-shrink-0 shadow-sm">
+                        {m.mine_id}
+                      </div>
+                      <div>
+                        <div className="text-[14px] font-bold text-[#EFEFEF] flex items-center gap-2">
+                          <span>{m.mine_name}</span>
+                          <span
+                            className={`inline-block px-2 py-0.5 rounded text-[10px] font-semibold border ${
+                              isHigh
+                                ? 'bg-[#D94F4F]/15 text-[#D94F4F] border-[#D94F4F]/30'
+                                : isMed
+                                ? 'bg-[#C98040]/15 text-[#C98040] border-[#C98040]/30'
+                                : 'bg-[#4F9067]/15 text-[#4F9067] border-[#4F9067]/30'
+                            }`}
+                          >
+                            {isHigh ? 'High Risk' : isMed ? 'Moderate Risk' : 'On Track'}
+                          </span>
+                        </div>
+                        <div className="text-[11px] text-[#777777] mt-0.5">
+                          Shortfall Probability: <strong className="text-[#AAAAAA]">{m.shortfall_probability.toFixed(0)}%</strong>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Center: Extraction Progress */}
+                    <div className="w-full md:w-60 space-y-1.5">
+                      <div className="flex justify-between text-[11px] text-[#888888]">
+                        <span>Extracted: <strong className="text-[#CCCCCC]">{m.mtd_actual_tonnes.toLocaleString()} T</strong></span>
+                        <span>Target: {m.target_tonnes.toLocaleString()} T</span>
+                      </div>
+                      <div className="w-full bg-[#202026] rounded-full h-2 overflow-hidden">
+                        <div
+                          className={`h-2 rounded-full transition-all duration-700 ease-out ${
+                            isHigh ? 'bg-[#D94F4F]' : isMed ? 'bg-[#C98040]' : 'bg-[#4F9067]'
+                          }`}
+                          style={{ width: `${Math.min(minePercent, 100)}%` }}
+                        ></div>
+                      </div>
+                      <div className="text-[10px] text-[#666666] flex justify-between">
+                        <span>{m.daily_avg_tonnes} T/day</span>
+                        <span className="font-medium text-[#888888]">{minePercent}% pace</span>
+                      </div>
+                    </div>
+
+                    {/* Right: Driver & Action */}
+                    <div className="flex items-center justify-between md:justify-end gap-3 w-full md:w-auto">
+                      <div className="text-[11px] text-[#888888] max-w-xs hidden lg:block">
+                        <span className="text-[#555555]">Driver: </span>
+                        <span>{m.main_reason}</span>
+                      </div>
+
+                      {/* Quick Inspect Trigger */}
+                      <button
+                        onClick={() => setQuickInspectMine(m)}
+                        className="bg-[#18181E] hover:bg-[#22222A] border border-[#282832] text-[#A0A0A8] hover:text-white px-2.5 py-1.5 rounded-lg text-[11px] font-medium transition-all"
+                        title="Quick snapshot"
+                      >
+                        Preview
+                      </button>
+
+                      {/* Full Diagnosis Navigation */}
+                      <button
+                        onClick={() => onSelectMine(m.mine_id)}
+                        className="bg-[#202026] hover:bg-[#282832] border border-[#2E2E38] text-[#EFEFEF] px-3.5 py-1.5 rounded-lg text-[12px] font-medium transition-all flex items-center gap-1.5 flex-shrink-0 shadow-sm"
+                      >
+                        <span>Diagnose</span>
+                        <span className="text-[#888888]">&rarr;</span>
+                      </button>
+                    </div>
+                  </div>
+                );
+              })
+            )}
           </div>
         </div>
 
-        {/* Simplified, High-Signal Rows */}
-        <div className="divide-y divide-[#242424]">
-          {filteredMines.map((m) => {
-            const isHigh = m.risk_level === 'HIGH';
-            const isMed = m.risk_level === 'MEDIUM';
-            const minePercent = Math.round((m.mtd_actual_tonnes / Math.max(m.target_tonnes, 1)) * 100);
-
-            return (
-              <div
-                key={m.mine_id}
-                className="p-4 sm:p-5 hover:bg-[#1C1C1C] transition-colors flex flex-col md:flex-row items-start md:items-center justify-between gap-4"
-              >
-                {/* Left: Mine Identity & Risk Status */}
-                <div className="flex items-start sm:items-center gap-3.5 min-w-[200px]">
-                  <div className="w-9 h-9 rounded-md bg-[#222222] border border-[#2E2E2E] text-[#C0BDB8] font-bold text-xs flex items-center justify-center flex-shrink-0">
-                    {m.mine_id}
-                  </div>
+        {/* Quick Inspect Modal Popup */}
+        {quickInspectMine && (
+          <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in">
+            <div className="bg-[#16161A] border border-[#2A2A34] rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl animate-fade-in-up">
+              <div className="flex justify-between items-center border-b border-[#222228] pb-3">
+                <div className="flex items-center gap-2.5">
+                  <span className="w-8 h-8 rounded-lg bg-[#202026] border border-[#2E2E38] text-[#C0BDB8] font-bold text-xs flex items-center justify-center">
+                    {quickInspectMine.mine_id}
+                  </span>
                   <div>
-                    <div className="text-[14px] font-bold text-[#EFEFEF] flex items-center gap-2">
-                      <span>{m.mine_name}</span>
-                      <span
-                        className={`inline-block px-2 py-0.5 rounded text-[10px] font-semibold border ${
-                          isHigh
-                            ? 'bg-[#D94F4F]/15 text-[#D94F4F] border-[#D94F4F]/30'
-                            : isMed
-                            ? 'bg-[#C98040]/15 text-[#C98040] border-[#C98040]/30'
-                            : 'bg-[#4F9067]/15 text-[#4F9067] border-[#4F9067]/30'
-                        }`}
-                      >
-                        {isHigh ? 'High Risk' : isMed ? 'Medium Risk' : 'On Track'}
-                      </span>
-                    </div>
-                    <div className="text-[11px] text-[#777777] mt-0.5">
-                      Shortfall Probability: <strong className="text-[#AAAAAA]">{m.shortfall_probability.toFixed(0)}%</strong>
-                    </div>
+                    <h3 className="text-base font-bold text-[#EFEFEF]">{quickInspectMine.mine_name}</h3>
+                    <span className="text-[11px] text-[#777777]">Telemetry Snapshot</span>
                   </div>
                 </div>
+                <button
+                  onClick={() => setQuickInspectMine(null)}
+                  className="text-[#888888] hover:text-white px-2 py-1 rounded bg-[#202026] border border-[#2A2A32] text-xs transition-colors"
+                >
+                  &times; Close
+                </button>
+              </div>
 
-                {/* Center: Production Progress Bar */}
-                <div className="w-full md:w-56 space-y-1.5">
-                  <div className="flex justify-between text-[11px] text-[#888888]">
-                    <span>Extracted: <strong className="text-[#CCCCCC]">{m.mtd_actual_tonnes.toLocaleString()} T</strong></span>
-                    <span>Target: {m.target_tonnes.toLocaleString()} T</span>
-                  </div>
-                  <div className="w-full bg-[#242424] rounded-full h-2 overflow-hidden">
-                    <div
-                      className={`h-2 rounded-full ${
-                        isHigh ? 'bg-[#D94F4F]' : isMed ? 'bg-[#C98040]' : 'bg-[#4F9067]'
-                      }`}
-                      style={{ width: `${Math.min(minePercent, 100)}%` }}
-                    ></div>
-                  </div>
-                  <div className="text-[10px] text-[#666666] flex justify-between">
-                    <span>{m.daily_avg_tonnes} T/day</span>
-                    <span>{minePercent}% achieved</span>
-                  </div>
+              <div className="space-y-2.5 text-[12px]">
+                <div className="flex justify-between p-2.5 bg-[#121215] rounded-lg">
+                  <span className="text-[#777777]">Shortfall Probability:</span>
+                  <span className="font-bold text-[#EFEFEF]">{quickInspectMine.shortfall_probability}% ({quickInspectMine.risk_level})</span>
                 </div>
-
-                {/* Right: Primary Root Cause & Action Button */}
-                <div className="flex items-center justify-between md:justify-end gap-4 w-full md:w-auto">
-                  <div className="text-[11px] text-[#888888] max-w-xs hidden lg:block">
-                    <span className="text-[#555555]">Issue: </span>
-                    <span>{m.main_reason}</span>
-                  </div>
-                  <button
-                    onClick={() => onSelectMine(m.mine_id)}
-                    className="bg-[#242424] hover:bg-[#2F2F2F] border border-[#353535] text-[#EFEFEF] px-3.5 py-1.5 rounded-md text-[12px] font-medium transition-colors flex items-center gap-1.5 flex-shrink-0"
-                  >
-                    <span>Diagnose</span>
-                    <span className="text-[#888888]">&rarr;</span>
-                  </button>
+                <div className="flex justify-between p-2.5 bg-[#121215] rounded-lg">
+                  <span className="text-[#777777]">Monthly Extraction:</span>
+                  <span className="font-bold text-[#EFEFEF]">{quickInspectMine.mtd_actual_tonnes.toLocaleString()} / {quickInspectMine.target_tonnes.toLocaleString()} T</span>
+                </div>
+                <div className="flex justify-between p-2.5 bg-[#121215] rounded-lg">
+                  <span className="text-[#777777]">Equipment Breakdown:</span>
+                  <span className="font-bold text-[#EFEFEF]">{quickInspectMine.equipment_downtime_hrs} hrs/day</span>
+                </div>
+                <div className="p-3 bg-[#121215] rounded-lg space-y-1">
+                  <div className="text-[11px] text-[#777777] font-semibold uppercase tracking-wider">Root Cause:</div>
+                  <div className="text-[#CCCCCC] leading-relaxed">{quickInspectMine.main_reason}</div>
                 </div>
               </div>
-            );
-          })}
-        </div>
+
+              <div className="flex gap-2 pt-2">
+                <button
+                  onClick={() => {
+                    const id = quickInspectMine.mine_id;
+                    setQuickInspectMine(null);
+                    onSelectMine(id);
+                  }}
+                  className="flex-1 bg-[#202026] hover:bg-[#282832] border border-[#2E2E38] text-white py-2.5 rounded-lg text-[12px] font-semibold transition-all text-center"
+                >
+                  Open Full SHAP Diagnosis &rarr;
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
-    </div>
+    </Skeleton>
   );
 }

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
 export type PageId =
@@ -18,8 +18,14 @@ interface SidebarProps {
 
 export default function Sidebar({ activePage, onNavigate }: SidebarProps) {
   const { t } = useTranslation();
+  const [time, setTime] = useState(new Date());
 
-  const navItems: { id: PageId; labelKey: string; icon: React.ReactNode }[] = [
+  useEffect(() => {
+    const t = setInterval(() => setTime(new Date()), 1000);
+    return () => clearInterval(t);
+  }, []);
+
+  const navItems: { id: PageId; labelKey: string; badge?: string; icon: React.ReactNode }[] = [
     {
       id: 'landing',
       labelKey: 'nav.landing',
@@ -59,6 +65,7 @@ export default function Sidebar({ activePage, onNavigate }: SidebarProps) {
     {
       id: 'risk',
       labelKey: 'nav.riskRootCause',
+      badge: 'SHAP',
       icon: (
         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
@@ -77,6 +84,7 @@ export default function Sidebar({ activePage, onNavigate }: SidebarProps) {
     {
       id: 'digitalTwin',
       labelKey: 'nav.digitalTwin',
+      badge: 'GIS',
       icon: (
         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
@@ -94,42 +102,124 @@ export default function Sidebar({ activePage, onNavigate }: SidebarProps) {
     },
   ];
 
+  const hourStr = time.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
+
   return (
-    <aside className="w-60 bg-[#161616] border-r border-[#262626] flex flex-col justify-between select-none">
-      {/* Navigation List */}
-      <div className="py-5">
-        <div className="px-5 mb-3 text-[11px] font-semibold uppercase tracking-wider text-[#666666]">
-          Navigation
+    <aside className="w-60 flex flex-col justify-between select-none border-r border-white/[0.05]"
+      style={{
+        background: 'linear-gradient(180deg, rgba(16,16,20,0.98) 0%, rgba(12,12,15,0.99) 100%)',
+        backdropFilter: 'blur(20px)',
+      }}
+    >
+      {/* Logo & Brand */}
+      <div>
+        <div className="px-5 pt-5 pb-4 border-b border-white/[0.05]">
+          <div className="flex items-center gap-2.5 mb-0.5">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#4F9067]/30 to-[#3D7852]/20 border border-[#4F9067]/25 flex items-center justify-center">
+              <svg className="w-4 h-4 text-[#4F9067]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+            </div>
+            <div>
+              <div className="text-[14px] font-extrabold tracking-tight text-[#F0F0F0]">MIDAS</div>
+              <div className="text-[10px] text-[#555566] font-medium">Mine Intelligence Core</div>
+            </div>
+          </div>
         </div>
-        <nav className="space-y-1 px-2.5">
-          {navItems.map((item) => {
-            const isActive = activePage === item.id;
-            return (
-              <button
-                key={item.id}
-                onClick={() => onNavigate(item.id)}
-                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-md text-[13px] font-medium transition-all ${
-                  isActive
-                    ? 'bg-[#222222] text-[#F0F0F0] font-semibold border border-[#333333]'
-                    : 'text-[#888888] hover:text-[#D0D0D0] hover:bg-[#1C1C1C]'
-                }`}
-              >
-                <span className={isActive ? 'text-[#C0BDB8]' : 'text-[#666666]'}>{item.icon}</span>
-                <span className="flex-1 text-left truncate">{t(item.labelKey)}</span>
-                {isActive && <span className="w-1.5 h-1.5 rounded-full bg-[#C0BDB8]"></span>}
-              </button>
-            );
-          })}
-        </nav>
+
+        {/* Live Clock & Status Strip */}
+        <div className="px-5 py-3 border-b border-white/[0.04]">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="relative flex-shrink-0">
+                <span className="w-2 h-2 rounded-full bg-[#4F9067] inline-block"></span>
+                <span className="absolute inset-0 w-2 h-2 rounded-full bg-[#4F9067] animate-ping opacity-60"></span>
+              </div>
+              <span className="text-[11px] text-[#4F9067] font-semibold">LIVE</span>
+            </div>
+            <div className="text-[11px] font-mono text-[#888888] tracking-wider">{hourStr}</div>
+          </div>
+          <div className="text-[10px] text-[#444450] mt-1">IST &bull; Shift A Active</div>
+        </div>
+
+        {/* Navigation Section */}
+        <div className="py-4">
+          <div className="px-5 mb-2 text-[10px] font-bold uppercase tracking-widest text-[#444450]">
+            Modules
+          </div>
+          <nav className="space-y-0.5 px-2.5">
+            {navItems.map((item, idx) => {
+              const isActive = activePage === item.id;
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => onNavigate(item.id)}
+                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[12.5px] font-medium transition-all duration-200 group relative animate-fade-in-up ${
+                    isActive
+                      ? 'text-[#F0F0F0] font-semibold'
+                      : 'text-[#666672] hover:text-[#C8C8D4]'
+                  }`}
+                  style={{
+                    animationDelay: `${idx * 30}ms`,
+                    ...(isActive ? {
+                      background: 'linear-gradient(90deg, rgba(79,144,103,0.14) 0%, rgba(79,144,103,0.04) 100%)',
+                      borderLeft: '2px solid rgba(79,144,103,0.6)',
+                      paddingLeft: '10px',
+                    } : {}),
+                  }}
+                >
+
+                  {/* Active glow blob */}
+                  {isActive && (
+                    <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 bg-[#4F9067] rounded-r-full opacity-80 blur-[1px]" />
+                  )}
+
+                  <span className={`transition-colors duration-200 ${isActive ? 'text-[#4F9067]' : 'text-[#444450] group-hover:text-[#888888]'}`}>
+                    {item.icon}
+                  </span>
+                  <span className="flex-1 text-left truncate">{t(item.labelKey)}</span>
+                  {item.badge && (
+                    <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded tracking-wider ${
+                      isActive
+                        ? 'bg-[#4F9067]/20 text-[#4F9067] border border-[#4F9067]/30'
+                        : 'bg-white/[0.04] text-[#555560] border border-white/[0.06]'
+                    }`}>
+                      {item.badge}
+                    </span>
+                  )}
+                </button>
+              );
+            })}
+          </nav>
+        </div>
       </div>
 
       {/* System Status Footer */}
-      <div className="p-4 border-t border-[#262626] text-[11px] text-[#666666] bg-[#121212]">
-        <div className="flex items-center gap-2 font-medium text-[#888888]">
-          <span className="w-2 h-2 rounded-full bg-[#4F9067]"></span>
-          <span>MOIL AI Core Active</span>
+      <div className="p-4 border-t border-white/[0.05]"
+        style={{ background: 'rgba(10,10,13,0.8)' }}
+      >
+        <div className="space-y-2.5">
+          {/* Model Health */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-1.5 text-[11px] font-medium text-[#888888]">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#4F9067]"></span>
+              AI Models Healthy
+            </div>
+            <span className="text-[10px] text-[#555560]">2/2</span>
+          </div>
+          {/* SCADA Feed */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-1.5 text-[11px] font-medium text-[#888888]">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#4F9067]"></span>
+              SCADA Feed
+            </div>
+            <span className="text-[10px] text-[#4F9067]">Synced</span>
+          </div>
+          {/* Build version */}
+          <div className="text-[9px] text-[#333340] font-mono pt-1 border-t border-white/[0.04]">
+            MIDAS v2.4.1 &bull; MOIL Production
+          </div>
         </div>
-        <div className="text-[10px] text-[#555555] mt-1">2 Pre-trained Models Serving</div>
       </div>
     </aside>
   );
