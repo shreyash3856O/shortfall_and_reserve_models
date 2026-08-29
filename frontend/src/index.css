@@ -18,39 +18,19 @@
     top: 0px !important;
     position: static !important;
   }
-
-  html {
-    top: 0px !important;
-  }
 }
 
 /* ─────────────────────────────────────────────────────────────
-   100% Invisible Google Translate Engine Integration
+   Google Translate Seamless Clean Integration
    ───────────────────────────────────────────────────────────── */
 .goog-te-banner-frame.skiptranslate,
 .goog-te-banner-frame,
 #goog-gt-tt,
-#goog-gt-vt,
 .goog-te-balloon-frame,
 .goog-te-spinner-pos,
-.goog-tooltip,
-.goog-tooltip:hover,
-.VIpgJd-ZVi9C-ORHb-OEVmcd,
-.VIpgJd-yAWNEb-VIpgJd-fmcmS-sn54Q,
-.VIpgJd-yAWNEb-hvhgNd-THIOPb,
-.VIpgJd-yAWNEb-L7lbkb,
-.VIpgJd-yAWNEb-rAVtvd,
-.goog-te-gadget,
-.goog-te-gadget-simple,
 .skiptranslate:not(.allow-translate) {
   display: none !important;
   visibility: hidden !important;
-  opacity: 0 !important;
-  pointer-events: none !important;
-  z-index: -9999 !important;
-  position: absolute !important;
-  left: -9999px !important;
-  top: -9999px !important;
 }
 
 body {
@@ -58,18 +38,14 @@ body {
   position: static !important;
 }
 
-html.translated-ltr,
-html.translated-rtl,
-body.translated-ltr,
-body.translated-rtl {
-  top: 0px !important;
-  position: static !important;
+.goog-tooltip,
+.goog-tooltip:hover {
+  display: none !important;
 }
 
 .goog-text-highlight {
   background-color: transparent !important;
   box-shadow: none !important;
-  border: none !important;
 }
 
 #google_translate_element {
@@ -86,7 +62,6 @@ body.translated-rtl {
 font {
   background-color: transparent !important;
   box-shadow: none !important;
-  color: inherit !important;
 }
 
 /* Glass Tile Effect Utility */
@@ -131,6 +106,7 @@ font {
   }
   to {
     opacity: 1;
+    transform: translateY(0);
   }
 }
 
@@ -141,6 +117,7 @@ font {
   }
   to {
     opacity: 1;
+    transform: scale(1.0);
   }
 }
 

@@ -121,7 +121,7 @@ export default function OverviewPage({ onSelectMine }: OverviewPageProps) {
               <svg className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin text-[#4F9067]' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
               </svg>
-              <span>{isRefreshing ? 'Syncing...' : 'Sync Telemetry'}</span>
+              <span>{isRefreshing ? t('overview.syncing') : t('overview.syncTelemetry')}</span>
             </button>
 
             {/* Export Shift Report Button */}
@@ -132,7 +132,7 @@ export default function OverviewPage({ onSelectMine }: OverviewPageProps) {
               <svg className="w-3.5 h-3.5 text-[#C0BDB8]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
               </svg>
-              <span>Export CSV</span>
+              <span>{t('overview.exportCSV')}</span>
             </button>
           </div>
         </div>
@@ -142,15 +142,15 @@ export default function OverviewPage({ onSelectMine }: OverviewPageProps) {
           <div className="flex items-center gap-4">
             <span className="flex items-center gap-1.5 text-[#CCCCCC]">
               <span className="w-2 h-2 rounded-full bg-[#4F9067]"></span>
-              <strong>Active Shift A</strong> (06:00 – 14:00)
+              <strong>{t('overview.activeShift')}</strong> (06:00 – 14:00)
             </span>
             <span className="text-[#44444A] hidden sm:inline">&bull;</span>
-            <span className="hidden sm:inline">Fleet Telemetry: <strong className="text-[#4F9067]">94.2% Online</strong> (48/51 units)</span>
+            <span className="hidden sm:inline">{t('overview.fleetTelemetry')}: <strong className="text-[#4F9067]">94.2% {t('overview.online')}</strong> (48/51 {t('overview.units')})</span>
             <span className="text-[#44444A] hidden md:inline">&bull;</span>
-            <span className="hidden md:inline">Balaghat Weather: <strong>28&deg;C &bull; 12mm Rain</strong></span>
+            <span className="hidden md:inline">Balaghat {t('overview.weather')}: <strong>28&deg;C &bull; 12mm {t('overview.rain')}</strong></span>
           </div>
           <div className="text-[#666666] font-mono text-[10px]">
-            WGS-84 &bull; Sausar Manganese Belt
+            WGS-84 &bull; {t('overview.sausarBelt')}
           </div>
         </div>
 
@@ -161,7 +161,7 @@ export default function OverviewPage({ onSelectMine }: OverviewPageProps) {
             <div className="flex justify-between items-center text-[#888888] text-[12px] font-medium">
               <span>{t('overview.activeProduction')}</span>
               <span className="text-[#4F9067] font-bold text-[11px] bg-[#4F9067]/15 px-2 py-0.5 rounded-md">
-                {percentAchieved}% pace
+                {percentAchieved}% {t('overview.pace')}
               </span>
             </div>
             <div className="text-2xl font-extrabold text-[#F5F5F7]">
@@ -182,18 +182,18 @@ export default function OverviewPage({ onSelectMine }: OverviewPageProps) {
               <span className={`text-[11px] font-bold px-2 py-0.5 rounded-md ${
                 atRiskMines.length > 0 ? 'bg-[#C98040]/15 text-[#C98040]' : 'bg-[#4F9067]/15 text-[#4F9067]'
               }`}>
-                {atRiskMines.length > 0 ? `${atRiskMines.length} Flagged` : 'All Clean'}
+                {atRiskMines.length > 0 ? `${atRiskMines.length} ${t('overview.flagged')}` : t('overview.allClean')}
               </span>
             </div>
             <div className="text-2xl font-extrabold text-[#F5F5F7]">
               <span className={atRiskMines.length > 0 ? 'text-[#C98040]' : 'text-[#4F9067]'}>
                 {atRiskMines.length}
               </span>
-              <span className="text-[13px] text-[#777777] font-normal"> of {mines.length} Units</span>
+              <span className="text-[13px] text-[#777777] font-normal"> of {mines.length} {t('overview.units')}</span>
             </div>
             <div className="text-[11px] text-[#777777] flex items-center gap-1.5">
               <span className={`w-1.5 h-1.5 rounded-full ${highRiskCount > 0 ? 'bg-[#D94F4F]' : 'bg-[#4F9067]'}`}></span>
-              <span>{highRiskCount} High Risk, {atRiskMines.length - highRiskCount} Moderate Risk</span>
+              <span>{highRiskCount} {t('overview.highRisk')}, {atRiskMines.length - highRiskCount} {t('overview.moderateRisk')}</span>
             </div>
           </div>
 
@@ -202,14 +202,14 @@ export default function OverviewPage({ onSelectMine }: OverviewPageProps) {
             <div className="flex justify-between items-center text-[#888888] text-[12px] font-medium">
               <span>{t('overview.totalReserves')}</span>
               <span className="text-[#C0BDB8] font-bold text-[11px] bg-white/[0.08] px-2 py-0.5 rounded-md">
-                Proved 111
+                {t('overview.proved111')}
               </span>
             </div>
             <div className="text-2xl font-extrabold text-[#F5F5F7]">
               {totalReserveOre.toFixed(3)} <span className="text-[13px] text-[#777777] font-normal">MT</span>
             </div>
             <div className="text-[11px] text-[#777777]">
-              In-situ Cutoff &ge;32% Mn &bull; Kriging Mesh
+              {t('overview.krigingMesh')}
             </div>
           </div>
 
@@ -218,14 +218,14 @@ export default function OverviewPage({ onSelectMine }: OverviewPageProps) {
             <div className="flex justify-between items-center text-[#888888] text-[12px] font-medium">
               <span>{t('overview.modelReliability')}</span>
               <span className="text-[#4F9067] font-bold text-[11px] bg-[#4F9067]/15 px-2 py-0.5 rounded-md">
-                0.9921 AUC
+                {t('overview.aucScore')}
               </span>
             </div>
             <div className="text-2xl font-extrabold text-[#4F9067]">
               98.5%
             </div>
             <div className="text-[11px] text-[#777777]">
-              133/135 Deficits Detected (Test Holdout)
+              {t('overview.deficitsDetected')}
             </div>
           </div>
         </div>
@@ -239,10 +239,10 @@ export default function OverviewPage({ onSelectMine }: OverviewPageProps) {
               </div>
               <div>
                 <div className="text-[13px] font-bold text-[#EFEFEF]">
-                  {highRiskCount} production units require immediate attention
+                  {highRiskCount} {t('overview.alertBannerTitle')}
                 </div>
                 <div className="text-[12px] text-[#A08888]">
-                  Production pace is lagging due to equipment downtime and precipitation.
+                  {t('overview.alertBannerDesc')}
                 </div>
               </div>
             </div>
@@ -250,7 +250,7 @@ export default function OverviewPage({ onSelectMine }: OverviewPageProps) {
               onClick={() => setFilterTab('RISK')}
               className="bg-[#2E1818] hover:bg-[#3C1E1E] border border-[#582424] text-[#E5A5A5] px-4 py-1.5 rounded-xl text-[12px] font-semibold transition-all flex-shrink-0"
             >
-              Filter Flagged Units &rarr;
+              {t('overview.filterFlagged')}
             </button>
           </div>
         )}
@@ -265,7 +265,7 @@ export default function OverviewPage({ onSelectMine }: OverviewPageProps) {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search mine, ID, or root cause..."
+                placeholder={t('overview.searchPlaceholder')}
                 className="w-full bg-[#121216] border border-white/[0.08] rounded-xl pl-9 pr-3.5 py-2 text-[12px] text-[#EFEFEF] focus:outline-none focus:border-[#4F9067]/70 placeholder-[#666666] transition-all"
               />
               <svg className="w-3.5 h-3.5 text-[#666666] absolute left-3 top-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -283,7 +283,7 @@ export default function OverviewPage({ onSelectMine }: OverviewPageProps) {
                     : 'text-[#777777] hover:text-[#CCCCCC]'
                 }`}
               >
-                All ({mines.length})
+                {t('overview.allTab')} ({mines.length})
               </button>
               <button
                 onClick={() => setFilterTab('RISK')}
@@ -293,7 +293,7 @@ export default function OverviewPage({ onSelectMine }: OverviewPageProps) {
                     : 'text-[#777777] hover:text-[#CCCCCC]'
                 }`}
               >
-                Needs Attention ({atRiskMines.length})
+                {t('overview.needsAttentionTab')} ({atRiskMines.length})
               </button>
               <button
                 onClick={() => setFilterTab('OK')}
@@ -303,7 +303,7 @@ export default function OverviewPage({ onSelectMine }: OverviewPageProps) {
                     : 'text-[#777777] hover:text-[#CCCCCC]'
                 }`}
               >
-                On Track ({onTrackMines.length})
+                {t('overview.onTrackTab')} ({onTrackMines.length})
               </button>
             </div>
           </div>
@@ -312,7 +312,7 @@ export default function OverviewPage({ onSelectMine }: OverviewPageProps) {
           <div className="divide-y divide-white/[0.04]">
             {filteredMines.length === 0 ? (
               <div className="p-8 text-center text-[#777777] text-[13px]">
-                No production units match your search query "{searchQuery}".
+                No production units match your search query &ldquo;{searchQuery}&rdquo;.
               </div>
             ) : (
               filteredMines.map((m, idx) => {
@@ -343,11 +343,11 @@ export default function OverviewPage({ onSelectMine }: OverviewPageProps) {
                                 : 'bg-[#4F9067]/15 text-[#4F9067] border-[#4F9067]/30'
                             }`}
                           >
-                            {isHigh ? 'High Risk' : isMed ? 'Moderate Risk' : 'On Track'}
+                            {isHigh ? t('overview.highRisk') : isMed ? t('overview.moderateRisk') : t('overview.onTrack')}
                           </span>
                         </div>
                         <div className="text-[11px] text-[#777777] mt-0.5">
-                          Shortfall Risk: <strong className="text-[#CCCCCC]">{m.shortfall_probability.toFixed(0)}%</strong>
+                          {t('common.probability')}: <strong className="text-[#CCCCCC]">{m.shortfall_probability.toFixed(0)}%</strong>
                         </div>
                       </div>
                     </div>
@@ -355,8 +355,8 @@ export default function OverviewPage({ onSelectMine }: OverviewPageProps) {
                     {/* Center: Extraction Progress */}
                     <div className="w-full md:w-60 space-y-1.5">
                       <div className="flex justify-between text-[11px] text-[#888888]">
-                        <span>Extracted: <strong className="text-[#CCCCCC]">{m.mtd_actual_tonnes.toLocaleString()} T</strong></span>
-                        <span>Target: {m.target_tonnes.toLocaleString()} T</span>
+                        <span>{t('overview.extracted')} <strong className="text-[#CCCCCC]">{m.mtd_actual_tonnes.toLocaleString()} T</strong></span>
+                        <span>{t('overview.targetLabel')} {m.target_tonnes.toLocaleString()} T</span>
                       </div>
                       <div className="w-full bg-white/[0.06] rounded-full h-2 overflow-hidden">
                         <div
@@ -367,15 +367,15 @@ export default function OverviewPage({ onSelectMine }: OverviewPageProps) {
                         ></div>
                       </div>
                       <div className="text-[10px] text-[#666666] flex justify-between">
-                        <span>{m.daily_avg_tonnes} T/day</span>
-                        <span className="font-medium text-[#888888]">{minePercent}% achieved</span>
+                        <span>{m.daily_avg_tonnes} {t('overview.tPerDay')}</span>
+                        <span className="font-medium text-[#888888]">{minePercent}% {t('overview.achieved')}</span>
                       </div>
                     </div>
 
                     {/* Right: Driver & Action */}
                     <div className="flex items-center justify-between md:justify-end gap-3 w-full md:w-auto">
                       <div className="text-[11px] text-[#888888] max-w-xs hidden lg:block">
-                        <span className="text-[#555555]">Driver: </span>
+                        <span className="text-[#555555]">{t('overview.driver')} </span>
                         <span>{m.main_reason}</span>
                       </div>
 
@@ -385,7 +385,7 @@ export default function OverviewPage({ onSelectMine }: OverviewPageProps) {
                         className="bg-white/[0.04] hover:bg-white/[0.09] border border-white/[0.08] text-[#A0A0A8] hover:text-white px-3 py-1.5 rounded-xl text-[11px] font-medium transition-all"
                         title="Quick snapshot"
                       >
-                        Preview
+                        {t('overview.preview')}
                       </button>
 
                       {/* Full Diagnosis Navigation */}
@@ -393,8 +393,7 @@ export default function OverviewPage({ onSelectMine }: OverviewPageProps) {
                         onClick={() => onSelectMine(m.mine_id)}
                         className="bg-white/[0.08] hover:bg-white/[0.14] border border-white/[0.15] text-[#EFEFEF] px-4 py-1.5 rounded-xl text-[12px] font-semibold transition-all flex items-center gap-1.5 flex-shrink-0 shadow-sm hover:scale-[1.02]"
                       >
-                        <span>Diagnose</span>
-                        <span className="text-[#888888]">&rarr;</span>
+                        <span>{t('overview.diagnose')}</span>
                       </button>
                     </div>
                   </div>
@@ -428,19 +427,19 @@ export default function OverviewPage({ onSelectMine }: OverviewPageProps) {
 
               <div className="space-y-2.5 text-[12px]">
                 <div className="flex justify-between p-3 bg-white/[0.03] border border-white/[0.05] rounded-xl">
-                  <span className="text-[#777777]">Shortfall Probability:</span>
+                  <span className="text-[#777777]">{t('common.probability')}:</span>
                   <span className="font-bold text-[#EFEFEF]">{quickInspectMine.shortfall_probability}% ({quickInspectMine.risk_level})</span>
                 </div>
                 <div className="flex justify-between p-3 bg-white/[0.03] border border-white/[0.05] rounded-xl">
-                  <span className="text-[#777777]">Monthly Extraction:</span>
+                  <span className="text-[#777777]">{t('common.actual')}:</span>
                   <span className="font-bold text-[#EFEFEF]">{quickInspectMine.mtd_actual_tonnes.toLocaleString()} / {quickInspectMine.target_tonnes.toLocaleString()} T</span>
                 </div>
                 <div className="flex justify-between p-3 bg-white/[0.03] border border-white/[0.05] rounded-xl">
-                  <span className="text-[#777777]">Equipment Breakdown:</span>
+                  <span className="text-[#777777]">Equipment Downtime:</span>
                   <span className="font-bold text-[#EFEFEF]">{quickInspectMine.equipment_downtime_hrs} hrs/day</span>
                 </div>
                 <div className="p-3.5 bg-white/[0.03] border border-white/[0.05] rounded-xl space-y-1">
-                  <div className="text-[11px] text-[#777777] font-semibold uppercase tracking-wider">Root Cause:</div>
+                  <div className="text-[11px] text-[#777777] font-semibold uppercase tracking-wider">{t('overview.driver')}</div>
                   <div className="text-[#CCCCCC] leading-relaxed">{quickInspectMine.main_reason}</div>
                 </div>
               </div>
@@ -452,9 +451,9 @@ export default function OverviewPage({ onSelectMine }: OverviewPageProps) {
                     setQuickInspectMine(null);
                     onSelectMine(id);
                   }}
-                  className="flex-1 bg-white/[0.08] hover:bg-white/[0.14] border border-white/[0.15] text-white py-3 rounded-xl text-[12px] font-semibold transition-all text-center hover:scale-[1.02]"
+                  className="flex-1 bg-[#4F9067] hover:bg-[#3D7852] text-white py-2.5 rounded-xl text-[12px] font-bold transition-all"
                 >
-                  Open Full SHAP Diagnosis &rarr;
+                  {t('overview.diagnose')}
                 </button>
               </div>
             </div>

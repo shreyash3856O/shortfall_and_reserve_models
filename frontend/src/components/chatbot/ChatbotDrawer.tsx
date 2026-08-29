@@ -22,13 +22,11 @@ interface MessageItem {
 // Markdown renderer: converts AI markdown responses into styled HTML
 // ─────────────────────────────────────────────────────────────────────
 function renderMarkdown(raw: string): React.ReactNode {
-  // Split into lines for block-level processing
   const lines = raw.split('\n');
   const nodes: React.ReactNode[] = [];
   let i = 0;
 
   const renderInline = (text: string, key?: string): React.ReactNode => {
-    // Process inline markdown: **bold**, *italic*, `code`
     const parts: React.ReactNode[] = [];
     let last = 0;
     const pattern = /(\*\*([^*]+)\*\*|\*([^*]+)\*|`([^`]+)`)/g;
@@ -56,14 +54,12 @@ function renderMarkdown(raw: string): React.ReactNode {
   while (i < lines.length) {
     const line = lines[i];
 
-    // Skip pure blank lines but add spacing node
     if (line.trim() === '') {
       nodes.push(<div key={`br-${i}`} className="h-1" />);
       i++;
       continue;
     }
 
-    // Heading H1 (# )
     if (/^# (.+)/.test(line)) {
       nodes.push(
         <h1 key={`h1-${i}`} className="text-[15px] font-extrabold text-white mt-2 mb-1">
@@ -74,7 +70,6 @@ function renderMarkdown(raw: string): React.ReactNode {
       continue;
     }
 
-    // Heading H2 (## )
     if (/^## (.+)/.test(line)) {
       nodes.push(
         <h2 key={`h2-${i}`} className="text-[13px] font-bold text-[#D0D0D8] mt-2 mb-0.5">
@@ -85,7 +80,6 @@ function renderMarkdown(raw: string): React.ReactNode {
       continue;
     }
 
-    // Heading H3 (### )
     if (/^### (.+)/.test(line)) {
       nodes.push(
         <h3 key={`h3-${i}`} className="text-[12px] font-semibold text-[#AAAAAA] mt-1.5 mb-0.5">
@@ -96,7 +90,6 @@ function renderMarkdown(raw: string): React.ReactNode {
       continue;
     }
 
-    // Ordered list item (1. or 1) )
     if (/^\d+[.)]\s/.test(line)) {
       const listItems: React.ReactNode[] = [];
       while (i < lines.length && /^\d+[.)]\s/.test(lines[i])) {
@@ -119,7 +112,6 @@ function renderMarkdown(raw: string): React.ReactNode {
       continue;
     }
 
-    // Unordered list item (* or - or •)
     if (/^[\*\-•]\s/.test(line.trim())) {
       const listItems: React.ReactNode[] = [];
       while (i < lines.length && /^[\*\-•]\s/.test(lines[i].trim())) {
@@ -145,14 +137,12 @@ function renderMarkdown(raw: string): React.ReactNode {
       continue;
     }
 
-    // Horizontal rule (---, ***)
     if (/^---+$|^\*\*\*+$/.test(line.trim())) {
       nodes.push(<hr key={`hr-${i}`} className="border-white/[0.08] my-2" />);
       i++;
       continue;
     }
 
-    // Regular paragraph
     nodes.push(
       <p key={`p-${i}`} className="text-[13px] leading-relaxed text-[#E0E0E6] mb-1">
         {renderInline(line, `p${i}`)}
@@ -179,19 +169,19 @@ export default function ChatbotDrawer({ isOpen, onClose }: ChatbotDrawerProps) {
   const [activeModel, setActiveModel] = useState(groqService.getModel());
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const suggestedQueries = [
-    'Why is Mine MN01 at risk this month?',
-    'What is our total estimated tonnage in the high-grade zone?',
-    'Show model validation accuracy and recall metrics',
-    'Which spare parts should we requisition immediately for Balaghat?',
+  const getSuggestedQueries = () => [
+    t('chat.query1'),
+    t('chat.query2'),
+    t('chat.query3'),
+    t('chat.query4'),
   ];
 
   useEffect(() => {
     const welcome: MessageItem = {
       id: 'welcome',
       sender: 'assistant',
-      text: 'MIDAS AI Assistant active. I provide **real-time mine shortfall risk assessments**, SHAP root-cause attributions, prescriptive rules, equipment dispatch forecasts, and **geological reserve block estimates**.\n\nSelect a suggested query or ask anything about mine operations.',
-      suggested: suggestedQueries,
+      text: t('chat.welcomeMessage'),
+      suggested: getSuggestedQueries(),
       timestamp: new Date(),
     };
     setMessages([welcome]);
@@ -228,9 +218,9 @@ export default function ChatbotDrawer({ isOpen, onClose }: ChatbotDrawerProps) {
         model: result.model,
         sources: result.sources,
         suggested: [
-          'What are the recommended actions for Dongri Buzurg?',
-          'Check fleet downtime across all 10 mines',
-          'Show high-grade reserve breakdown',
+          t('chat.query1'),
+          t('chat.query2'),
+          t('chat.query3'),
         ],
         timestamp: new Date(),
       };
@@ -364,7 +354,7 @@ export default function ChatbotDrawer({ isOpen, onClose }: ChatbotDrawerProps) {
             {m.suggested && m.suggested.length > 0 && (
               <div className="mt-2.5 w-full max-w-[92%]">
                 <div className="text-[9px] text-[#444444] font-bold uppercase tracking-wider mb-1.5">
-                  Quick Queries:
+                  {t('chat.quickQueries')}
                 </div>
                 <div className="flex flex-wrap gap-1.5">
                   {m.suggested.map((s, idx) => (
