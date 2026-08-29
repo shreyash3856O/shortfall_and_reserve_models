@@ -5,7 +5,7 @@ import { api, ReserveGridBlock, ReservePredictResponse, ReserveSummaryItem } fro
 import { ReserveSkeleton } from '../components/layout/ViewSkeletons';
 
 export default function ReserveMapPage() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [summary, setSummary] = useState<ReserveSummaryItem[]>([]);
   const [blocks, setBlocks] = useState<ReserveGridBlock[]>([]);
   const [totalBlocks, setTotalBlocks] = useState(0);
@@ -57,6 +57,15 @@ export default function ReserveMapPage() {
 
   const inputClass = "w-full bg-[#121216] border border-white/[0.08] rounded-xl px-3.5 py-2 text-[#EFEFEF] text-[12px] focus:outline-none focus:border-[#4F9067]/70 transition-all";
 
+  const getLocalizedZoneName = (zone: string, zoneId: number) => {
+    if (zoneId === 2) return t('reserve.greenZone');
+    if (zoneId === 1) return t('reserve.yellowZone');
+    return t('reserve.allZones');
+  };
+
+  const isHindi = i18n.language === 'hi';
+  const isMarathi = i18n.language === 'mr';
+
   return (
     <Skeleton
       name="reserve-map"
@@ -86,18 +95,18 @@ export default function ReserveMapPage() {
                   <span className={`text-[12px] font-bold ${
                     isHigh ? 'text-[#4F9067]' : isMed ? 'text-[#C98040]' : 'text-[#C0BDB8]'
                   }`}>
-                    {item.zone}
+                    {getLocalizedZoneName(item.zone, item.zone_id)}
                   </span>
                   <span className="text-[11px] text-[#777777]">
-                    {isHigh ? '&ge;38% Mn' : isMed ? '32-38% Mn' : 'All Grades'}
+                    {isHigh ? '≥38% Mn' : isMed ? '32-38% Mn' : isHindi ? 'सभी ग्रेड' : isMarathi ? 'सर्व दर्जा' : 'All Grades'}
                   </span>
                 </div>
                 <div className="text-2xl font-extrabold text-[#F5F5F7]">
-                  {item.tonnage_mt.toFixed(3)} <span className="text-[13px] text-[#777777] font-normal">Million Tonnes</span>
+                  {item.tonnage_mt.toFixed(3)} <span className="text-[13px] text-[#777777] font-normal">{isHindi ? 'मिलियन टन' : isMarathi ? 'दशलक्ष टन' : 'Million Tonnes'}</span>
                 </div>
                 <div className="pt-2 border-t border-white/[0.06] text-[#777777] text-[11px] flex justify-between">
-                  <span>Mean Grade: <strong className="text-[#CCCCCC]">{item.mean_grade_mn_pct.toFixed(1)}% Mn</strong></span>
-                  <span>Seam: <strong className="text-[#CCCCCC]">{item.mean_thickness_m.toFixed(1)} m</strong></span>
+                  <span>{isHindi ? 'औसत ग्रेड:' : isMarathi ? 'सरासरी प्रत:' : 'Mean Grade:'} <strong className="text-[#CCCCCC]">{item.mean_grade_mn_pct.toFixed(1)}% Mn</strong></span>
+                  <span>{isHindi ? 'सीम मोटाई:' : isMarathi ? 'थराची जाडी:' : 'Seam:'} <strong className="text-[#CCCCCC]">{item.mean_thickness_m.toFixed(1)} m</strong></span>
                 </div>
               </div>
             );
@@ -110,33 +119,45 @@ export default function ReserveMapPage() {
           <div className="lg:col-span-5 glass-tile-static p-6 space-y-4 rounded-3xl shadow-xl animate-fade-in-up stagger-3">
             <div className="border-b border-white/[0.06] pb-3">
               <h2 className="text-[14px] font-bold text-[#F5F5F7]">{t('reserve.pointInspector')}</h2>
-              <p className="text-[11px] text-[#777777] mt-0.5">Enter borehole coordinates to estimate in-situ grade</p>
+              <p className="text-[11px] text-[#777777] mt-0.5">
+                {isHindi ? 'इन-सिटू ग्रेड का अनुमान लगाने के लिए बोरहोल निर्देशांक दर्ज करें' : isMarathi ? 'स्थानिक प्रत अंदाज लावण्यासाठी बोअरहोल निर्देशांक प्रविष्ट करा' : 'Enter borehole coordinates to estimate in-situ grade'}
+              </p>
             </div>
 
             <form onSubmit={handlePredictPoint} className="space-y-3">
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-[#888888] text-[11px] font-medium mb-1">Easting (m)</label>
+                  <label className="block text-[#888888] text-[11px] font-medium mb-1">
+                    {isHindi ? 'ईस्टिंग (m)' : isMarathi ? 'ईस्टिंग (m)' : 'Easting (m)'}
+                  </label>
                   <input type="number" value={easting} onChange={(e) => setEasting(Number(e.target.value))} className={inputClass} />
                 </div>
                 <div>
-                  <label className="block text-[#888888] text-[11px] font-medium mb-1">Northing (m)</label>
+                  <label className="block text-[#888888] text-[11px] font-medium mb-1">
+                    {isHindi ? 'नॉर्थिंग (m)' : isMarathi ? 'नॉर्थिंग (m)' : 'Northing (m)'}
+                  </label>
                   <input type="number" value={northing} onChange={(e) => setNorthing(Number(e.target.value))} className={inputClass} />
                 </div>
               </div>
 
               <div>
-                <label className="block text-[#888888] text-[11px] font-medium mb-1">Drill Depth (m)</label>
+                <label className="block text-[#888888] text-[11px] font-medium mb-1">
+                  {isHindi ? 'ड्रिल गहराई (m)' : isMarathi ? 'ड्रिल खोली (m)' : 'Drill Depth (m)'}
+                </label>
                 <input type="number" value={depth} onChange={(e) => setDepth(Number(e.target.value))} className={inputClass} />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-[#888888] text-[11px] font-medium mb-1">NDVI Index</label>
+                  <label className="block text-[#888888] text-[11px] font-medium mb-1">
+                    {isHindi ? 'NDVI सूचकांक' : isMarathi ? 'NDVI निर्देशांक' : 'NDVI Index'}
+                  </label>
                   <input type="number" step="0.01" value={ndvi} onChange={(e) => setNdvi(Number(e.target.value))} className={inputClass} />
                 </div>
                 <div>
-                  <label className="block text-[#888888] text-[11px] font-medium mb-1">Moisture Index</label>
+                  <label className="block text-[#888888] text-[11px] font-medium mb-1">
+                    {isHindi ? 'नमी सूचकांक' : isMarathi ? 'ओलावा निर्देशांक' : 'Moisture Index'}
+                  </label>
                   <input type="number" step="0.01" value={moisture} onChange={(e) => setMoisture(Number(e.target.value))} className={inputClass} />
                 </div>
               </div>
@@ -146,7 +167,9 @@ export default function ReserveMapPage() {
                 disabled={isPredicting}
                 className="w-full bg-white/[0.08] hover:bg-white/[0.14] disabled:opacity-40 border border-white/[0.15] text-white py-3 rounded-xl text-[12px] font-semibold transition-all duration-200 mt-2 shadow-sm hover:scale-[1.01]"
               >
-                {isPredicting ? 'Calculating Kriging Residuals...' : 'Run Spatial Estimation &rarr;'}
+                {isPredicting
+                  ? (isHindi ? 'गणना जारी है...' : isMarathi ? 'हिशोब चालू आहे...' : 'Calculating Kriging Residuals...')
+                  : (isHindi ? 'स्थानिक अनुमान चलाएं →' : isMarathi ? 'स्थानिक अंदाज चालवा →' : 'Run Spatial Estimation →')}
               </button>
             </form>
 
@@ -154,23 +177,23 @@ export default function ReserveMapPage() {
             {prediction && (
               <div className="mt-3 p-4 bg-white/[0.03] border border-white/[0.08] rounded-2xl space-y-2 text-[12px] animate-pop-up">
                 <div className="flex justify-between items-center border-b border-white/[0.06] pb-2">
-                  <span className="text-[#888888] font-medium">Estimated Grade</span>
+                  <span className="text-[#888888] font-medium">{isHindi ? 'अनुमानित ग्रेड' : isMarathi ? 'अंदाजित प्रत' : 'Estimated Grade'}</span>
                   <span className="text-[14px] font-bold text-[#F5F5F7]">{prediction.grade_pct.toFixed(2)}% Mn</span>
                 </div>
                 <div className="flex justify-between text-[#888888]">
-                  <span>95% Confidence</span>
+                  <span>{isHindi ? '95% विश्वास' : isMarathi ? '95% विश्वास' : '95% Confidence'}</span>
                   <span className="text-[#CCCCCC]">[{prediction.grade_ci_lower.toFixed(1)}% – {prediction.grade_ci_upper.toFixed(1)}%]</span>
                 </div>
                 <div className="flex justify-between text-[#888888]">
-                  <span>Seam Thickness</span>
+                  <span>{isHindi ? 'सीम मोटाई' : isMarathi ? 'थराची जाडी' : 'Seam Thickness'}</span>
                   <span className="text-[#CCCCCC]">{prediction.thickness_m.toFixed(2)} m</span>
                 </div>
                 <div className="flex justify-between text-[#888888]">
-                  <span>100m Block Tonnage</span>
+                  <span>{isHindi ? '100m ब्लॉक टनभार' : isMarathi ? '100m ब्लॉक टनेज' : '100m Block Tonnage'}</span>
                   <span className="text-[#CCCCCC]">{prediction.tonnage_mt_per_100m_block.toFixed(3)} MT</span>
                 </div>
                 <div className="flex justify-between text-[#888888] pt-1">
-                  <span>Ore Classification</span>
+                  <span>{isHindi ? 'अयस्क वर्गीकरण' : isMarathi ? 'धातू वर्गीकरण' : 'Ore Classification'}</span>
                   <span className="text-[#4F9067] font-bold">{prediction.zone}</span>
                 </div>
               </div>
@@ -182,7 +205,8 @@ export default function ReserveMapPage() {
             {/* Table Header & Zone Filters */}
             <div className="p-4 sm:p-5 border-b border-white/[0.06] flex flex-wrap justify-between items-center gap-3 bg-white/[0.02]">
               <div className="text-[13px] font-bold text-[#F5F5F7]">
-                Spatial Blocks <span className="text-[#777777] font-normal">({totalBlocks} total)</span>
+                {isHindi ? 'स्थानिक ब्लॉक' : isMarathi ? 'स्थानिक ब्लॉक्स' : 'Spatial Blocks'}{' '}
+                <span className="text-[#777777] font-normal">({totalBlocks} {isHindi ? 'कुल' : isMarathi ? 'एकूण' : 'total'})</span>
               </div>
               <div className="flex items-center gap-1 bg-[#121216] border border-white/[0.08] p-0.5 rounded-xl text-[11px] font-semibold">
                 <button
@@ -191,7 +215,7 @@ export default function ReserveMapPage() {
                     minGradeFilter === undefined ? 'bg-white/[0.12] text-white font-bold' : 'text-[#777777] hover:text-[#CCCCCC]'
                   }`}
                 >
-                  All
+                  {isHindi ? 'सभी' : isMarathi ? 'सर्व' : 'All'}
                 </button>
                 <button
                   onClick={() => { setMinGradeFilter(32); setPage(1); }}
@@ -216,12 +240,12 @@ export default function ReserveMapPage() {
               <table className="w-full text-left text-[12px]">
                 <thead className="bg-white/[0.02] border-b border-white/[0.06] text-[#777777] uppercase text-[10px] tracking-wider font-semibold">
                   <tr>
-                    <th className="py-3 px-4">Location (E, N)</th>
-                    <th className="py-3 px-4">Depth</th>
-                    <th className="py-3 px-4">Grade</th>
-                    <th className="py-3 px-4">Thickness</th>
-                    <th className="py-3 px-4">Tonnage</th>
-                    <th className="py-3 px-4">Category</th>
+                    <th className="py-3 px-4">{isHindi ? 'स्थान (E, N)' : isMarathi ? 'स्थान (E, N)' : 'Location (E, N)'}</th>
+                    <th className="py-3 px-4">{isHindi ? 'गहराई' : isMarathi ? 'खोली' : 'Depth'}</th>
+                    <th className="py-3 px-4">{isHindi ? 'ग्रेड' : isMarathi ? 'प्रत' : 'Grade'}</th>
+                    <th className="py-3 px-4">{isHindi ? 'मोटाई' : isMarathi ? 'जाडी' : 'Thickness'}</th>
+                    <th className="py-3 px-4">{isHindi ? 'टनभार' : isMarathi ? 'टनेज' : 'Tonnage'}</th>
+                    <th className="py-3 px-4">{isHindi ? 'श्रेणी' : isMarathi ? 'वर्ग' : 'Category'}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-white/[0.04] text-[#CCCCCC]">
@@ -240,7 +264,11 @@ export default function ReserveMapPage() {
                             ? 'bg-[#C98040]/15 text-[#C98040] border-[#C98040]/30'
                             : 'bg-[#D94F4F]/15 text-[#D94F4F] border-[#D94F4F]/30'
                         }`}>
-                          {b.zone_id === 2 ? 'High Grade' : b.zone_id === 1 ? 'Med Grade' : 'Low Grade'}
+                          {b.zone_id === 2
+                            ? (isHindi ? 'उच्च ग्रेड' : isMarathi ? 'उच्च दर्जा' : 'High Grade')
+                            : b.zone_id === 1
+                            ? (isHindi ? 'मध्यम ग्रेड' : isMarathi ? 'मध्यम दर्जा' : 'Med Grade')
+                            : (isHindi ? 'निम्न ग्रेड' : isMarathi ? 'कमी दर्जा' : 'Low Grade')}
                         </span>
                       </td>
                     </tr>
@@ -251,21 +279,23 @@ export default function ReserveMapPage() {
 
             {/* Pagination */}
             <div className="p-3.5 border-t border-white/[0.06] flex justify-between items-center bg-white/[0.02] text-[11px]">
-              <span className="text-[#777777]">Page {page} of {Math.ceil(totalBlocks / 15) || 1}</span>
+              <span className="text-[#777777]">
+                {isHindi ? 'पृष्ठ' : isMarathi ? 'पान' : 'Page'} {page} {isHindi ? 'का' : isMarathi ? 'पैकी' : 'of'} {Math.ceil(totalBlocks / 15) || 1}
+              </span>
               <div className="flex gap-2">
                 <button
                   disabled={page <= 1}
                   onClick={() => setPage((p) => p - 1)}
                   className="px-3 py-1 bg-white/[0.05] border border-white/[0.08] text-[#888888] rounded-lg disabled:opacity-40 hover:text-white transition-all"
                 >
-                  &larr; Prev
+                  &larr; {isHindi ? 'पिछला' : isMarathi ? 'मागील' : 'Prev'}
                 </button>
                 <button
                   disabled={page * 15 >= totalBlocks}
                   onClick={() => setPage((p) => p + 1)}
                   className="px-3 py-1 bg-white/[0.05] border border-white/[0.08] text-[#CCCCCC] rounded-lg disabled:opacity-40 hover:text-white transition-all"
                 >
-                  Next &rarr;
+                  {isHindi ? 'अगला' : isMarathi ? 'पुढील' : 'Next'} &rarr;
                 </button>
               </div>
             </div>
