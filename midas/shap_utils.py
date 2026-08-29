@@ -16,7 +16,7 @@ import shap
 
 from .config import FEATURE_LABELS, FEATURE_ORDER, TOP_N_DRIVERS
 
-LOGGER = logging.getLogger("midas.shap")
+LOGGER = logging.getLogger("CaveKrave.shap")
 
 
 def sigmoid(value: float) -> float:

@@ -1,5 +1,5 @@
 /**
- * MIDAS Type-safe API Client with Offline Caching & Full Offline Fallback Presets.
+ * CaveKrave Type-safe API Client with Offline Caching & Full Offline Fallback Presets.
  */
 
 export interface ReserveSummaryItem {
@@ -129,8 +129,8 @@ export interface ChatResponse {
   suggested_queries: string[];
 }
 
-const CACHE_KEY_PREFIX = 'midas_cache_';
-const SYNC_KEY = 'midas_last_sync_timestamp';
+const CACHE_KEY_PREFIX = 'cavekrave_cache_';
+const SYNC_KEY = 'cavekrave_last_sync_timestamp';
 
 function setCached<T>(key: string, data: T): void {
   try {
@@ -369,9 +369,9 @@ export const api = {
       // Offline AI chat fallback
     }
     return {
-      reply: `MIDAS AI Assistant (Offline Mode) active. Balaghat (MN01) is currently flagged at 100% shortfall risk due to 10.5h excavator downtime and 45mm monsoon rain. Recommended action: Deploy Komatsu PC1250 excavator to restore +350 T/day.`,
+      reply: `CaveKrave AI Assistant (Offline Mode) active. Balaghat (MN01) is currently flagged at 100% shortfall risk due to 10.5h excavator downtime and 45mm monsoon rain. Recommended action: Deploy Komatsu PC1250 excavator to restore +350 T/day.`,
       language,
-      sources_used: ['MIDAS Local Telemetry Cache', 'Offline Geological Block Model'],
+      sources_used: ['CaveKrave Local Telemetry Cache', 'Offline Geological Block Model'],
       suggested_queries: [
         'Why is Mine MN01 at risk this month?',
         'What is our total estimated tonnage in the high-grade zone?',

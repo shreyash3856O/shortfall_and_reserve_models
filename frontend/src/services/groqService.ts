@@ -60,11 +60,11 @@ export class GroqService {
   constructor() {
     this.apiKey =
       (typeof import.meta !== 'undefined' && import.meta.env?.VITE_GROQ_API_KEY) ||
-      (typeof localStorage !== 'undefined' && localStorage.getItem('midas_groq_api_key')) ||
+      (typeof localStorage !== 'undefined' && localStorage.getItem('cavekrave_groq_api_key')) ||
       '';
 
     this.model =
-      (typeof localStorage !== 'undefined' && localStorage.getItem('midas_groq_model')) ||
+      (typeof localStorage !== 'undefined' && localStorage.getItem('cavekrave_groq_model')) ||
       (typeof import.meta !== 'undefined' && import.meta.env?.VITE_GROQ_MODEL) ||
       'qwen/qwen3.8-27b';
 
@@ -72,17 +72,17 @@ export class GroqService {
       (typeof import.meta !== 'undefined' && import.meta.env?.VITE_GROQ_BASE_URL) ||
       'https://api.groq.com/openai/v1';
 
-    if (typeof localStorage !== 'undefined' && !localStorage.getItem('midas_groq_api_key') && this.apiKey) {
-      localStorage.setItem('midas_groq_api_key', this.apiKey);
+    if (typeof localStorage !== 'undefined' && !localStorage.getItem('cavekrave_groq_api_key') && this.apiKey) {
+      localStorage.setItem('cavekrave_groq_api_key', this.apiKey);
     }
   }
 
   public setApiKey(key: string) {
     this.apiKey = key.trim();
     if (this.apiKey) {
-      localStorage.setItem('midas_groq_api_key', this.apiKey);
+      localStorage.setItem('cavekrave_groq_api_key', this.apiKey);
     } else {
-      localStorage.removeItem('midas_groq_api_key');
+      localStorage.removeItem('cavekrave_groq_api_key');
     }
   }
 
@@ -93,7 +93,7 @@ export class GroqService {
   public setModel(model: string) {
     this.model = model;
     if (typeof localStorage !== 'undefined') {
-      localStorage.setItem('midas_groq_model', model);
+      localStorage.setItem('cavekrave_groq_model', model);
     }
   }
 
@@ -112,7 +112,7 @@ You MUST respond in ${langConfig.name} (${langConfig.nameEn}, script: ${langConf
 Provide fluent, idiomatic, and grammatically accurate translations into ${langConfig.name}. Maintain standard mining terminology (जैसे कि अयस्क ग्रेड, उत्पादन घाटा, टनभार, ड्रिलिंग, ब्लास्टिंग) in ${langConfig.name}.`
       : '';
 
-    return `You are MIDAS AI Assistant, an expert mining operations intelligence system for MOIL Limited manganese mining operations.
+    return `You are CaveKrave AI Assistant, an expert mining operations intelligence system for MOIL Limited manganese mining operations.
 
 CURRENT MINING CONTEXT:
 - Active Shift: ${miningContext.activeShift}
@@ -150,7 +150,7 @@ RESPONSE GUIDELINES:
 - Format key metrics clearly with markdown highlights.${langInstruction}`;
   }
 
-  // Fetch real-time mining data from MIDAS backend
+  // Fetch real-time mining data from CaveKrave backend
   async getMiningContext(): Promise<MiningData> {
     try {
       const response = await fetch('/api/shortfall/mines');
@@ -194,7 +194,7 @@ RESPONSE GUIDELINES:
   async sendMessage(
     userMessage: string,
     language: string = 'en'
-  ): Promise<{ reply: string; engine: 'GROQ' | 'MIDAS_LOCAL'; model?: string; sources?: string[] }> {
+  ): Promise<{ reply: string; engine: 'GROQ' | 'CAVEKRAVE_LOCAL'; model?: string; sources?: string[] }> {
     this.conversationHistory.push({
       role: 'user',
       content: userMessage,
@@ -262,7 +262,7 @@ RESPONSE GUIDELINES:
       }
     }
 
-    // Fallback: Query local MIDAS FastAPI analytical reasoning core
+    // Fallback: Query local CaveKrave FastAPI analytical reasoning core
     try {
       const res = await fetch('/api/chat', {
         method: 'POST',
@@ -277,19 +277,19 @@ RESPONSE GUIDELINES:
         });
         return {
           reply: chatData.reply,
-          engine: 'MIDAS_LOCAL',
-          sources: chatData.sources_used || ['MIDAS Analytical Core', 'Telemetry Ingest'],
+          engine: 'CAVEKRAVE_LOCAL',
+          sources: chatData.sources_used || ['CaveKrave Analytical Core', 'Telemetry Ingest'],
         };
       }
     } catch (localErr) {
-      console.error('Local MIDAS chat error:', localErr);
+      console.error('Local CaveKrave chat error:', localErr);
     }
 
     // Dynamic response for common questions if backend offline
     const isMN01 = userMessage.toLowerCase().includes('mn01') || userMessage.toLowerCase().includes('balaghat');
     const isReserve = userMessage.toLowerCase().includes('reserve') || userMessage.toLowerCase().includes('tonnage');
 
-    let reply = `MIDAS AI Assistant active. Balaghat (MN01) is currently flagged at 100% shortfall risk due to 10.5h excavator downtime and 45mm monsoon rain. Recommended action: Deploy Komatsu PC1250 excavator to restore +350 T/day.`;
+    let reply = `CaveKrave AI Assistant active. Balaghat (MN01) is currently flagged at 100% shortfall risk due to 10.5h excavator downtime and 45mm monsoon rain. Recommended action: Deploy Komatsu PC1250 excavator to restore +350 T/day.`;
     if (isReserve) {
       reply = `Total in-situ reserves across all 10 MOIL units stand at 4.781 Million Tonnes (High-Grade Green Zone: 1.892 MT at >=38% Mn).`;
     } else if (isMN01) {
@@ -302,8 +302,8 @@ RESPONSE GUIDELINES:
     });
     return {
       reply,
-      engine: 'MIDAS_LOCAL',
-      sources: ['MIDAS Offline Telemetry Cache'],
+      engine: 'CAVEKRAVE_LOCAL',
+      sources: ['CaveKrave Offline Telemetry Cache'],
     };
   }
 

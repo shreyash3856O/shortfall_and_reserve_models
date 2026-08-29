@@ -1,5 +1,5 @@
 /**
- * Universal In-DOM Live Auto-Translator for MIDAS Mining Dashboard.
+ * Universal In-DOM Live Auto-Translator for CaveKrave Mining Dashboard.
  * Traverses all rendered text nodes in the DOM and translates any English
  * words/phrases into the target language across all 37 supported languages.
  */

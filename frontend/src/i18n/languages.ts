@@ -1,5 +1,5 @@
 /**
- * MIDAS Language Configuration
+ * CaveKrave Language Configuration
  * Supports 35+ Indian and regional languages with i18next lazy loading.
  */
 export interface LanguageConfig {

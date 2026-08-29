@@ -11,7 +11,7 @@ interface MessageItem {
   id: string;
   sender: 'user' | 'assistant';
   text: string;
-  engine?: 'GROQ' | 'MIDAS_LOCAL';
+  engine?: 'GROQ' | 'CAVEKRAVE_LOCAL';
   model?: string;
   sources?: string[];
   suggested?: string[];
@@ -163,8 +163,8 @@ export default function ChatbotDrawer({ isOpen, onClose }: ChatbotDrawerProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [showKeyModal, setShowKeyModal] = useState(false);
   const [apiKeyInput, setApiKeyInput] = useState(groqService.getApiKey());
-  const [activeEngine, setActiveEngine] = useState<'GROQ' | 'MIDAS_LOCAL'>(
-    groqService.getApiKey() ? 'GROQ' : 'MIDAS_LOCAL'
+  const [activeEngine, setActiveEngine] = useState<'GROQ' | 'CAVEKRAVE_LOCAL'>(
+    groqService.getApiKey() ? 'GROQ' : 'CAVEKRAVE_LOCAL'
   );
   const [activeModel, setActiveModel] = useState(groqService.getModel());
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -231,7 +231,7 @@ export default function ChatbotDrawer({ isOpen, onClose }: ChatbotDrawerProps) {
         {
           id: `err-${Date.now()}`,
           sender: 'assistant',
-          text: '⚠️ Unable to reach the MIDAS reasoning engine. Falling back to local telemetry cache.',
+          text: '⚠️ Unable to reach the CaveKrave reasoning engine. Falling back to local telemetry cache.',
           timestamp: new Date(),
         },
       ]);
@@ -242,7 +242,7 @@ export default function ChatbotDrawer({ isOpen, onClose }: ChatbotDrawerProps) {
 
   const saveApiKey = () => {
     groqService.setApiKey(apiKeyInput);
-    setActiveEngine(apiKeyInput.trim() ? 'GROQ' : 'MIDAS_LOCAL');
+    setActiveEngine(apiKeyInput.trim() ? 'GROQ' : 'CAVEKRAVE_LOCAL');
     setShowKeyModal(false);
   };
 
@@ -266,7 +266,7 @@ export default function ChatbotDrawer({ isOpen, onClose }: ChatbotDrawerProps) {
                 : 'bg-white/[0.06] text-[#A0A0A8] border-white/[0.08]'
             }`}
           >
-            {activeEngine === 'GROQ' ? `Groq ${modelLabel}` : 'MIDAS Analytical Core'}
+            {activeEngine === 'GROQ' ? `Groq ${modelLabel}` : 'CaveKrave Analytical Core'}
           </span>
         </div>
 
@@ -315,7 +315,7 @@ export default function ChatbotDrawer({ isOpen, onClose }: ChatbotDrawerProps) {
           >
             {/* Sender label */}
             <div className="text-[10px] uppercase font-bold text-[#555555] mb-1.5 flex items-center gap-2">
-              <span>{m.sender === 'user' ? '👤 Manager' : '🤖 MIDAS AI Core'}</span>
+              <span>{m.sender === 'user' ? '👤 Manager' : '🤖 CaveKrave AI Core'}</span>
               <span className="text-[#3A3A3F] font-normal">
                 {m.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
               </span>
@@ -429,7 +429,7 @@ export default function ChatbotDrawer({ isOpen, onClose }: ChatbotDrawerProps) {
               <a href="https://console.groq.com/keys" target="_blank" rel="noreferrer" className="text-[#4F9067] underline">
                 console.groq.com
               </a>{' '}
-              to enable ultra-fast AI mining intelligence. If blank, MIDAS will use its local analytical engine.
+              to enable ultra-fast AI mining intelligence. If blank, CaveKrave will use its local analytical engine.
             </p>
 
             <div className="space-y-1.5">
@@ -451,7 +451,7 @@ export default function ChatbotDrawer({ isOpen, onClose }: ChatbotDrawerProps) {
                 Save & Activate
               </button>
               <button
-                onClick={() => { setApiKeyInput(''); groqService.setApiKey(''); setActiveEngine('MIDAS_LOCAL'); setShowKeyModal(false); }}
+                onClick={() => { setApiKeyInput(''); groqService.setApiKey(''); setActiveEngine('CAVEKRAVE_LOCAL'); setShowKeyModal(false); }}
                 className="px-4 py-2.5 bg-white/[0.05] hover:bg-white/[0.1] text-[#888888] hover:text-white rounded-xl text-[12px] transition-all"
               >
                 Reset

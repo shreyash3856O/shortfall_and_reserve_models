@@ -17,8 +17,8 @@ WORKSPACE_ROOT = Path(__file__).resolve().parent.parent
 DATA_FROM_ALL = (
     WORKSPACE_ROOT
     / "datafromall"
-    / "MIDAS - Mine Intelligence & Data Analytics System"
-    / "MIDAS - Mine Intelligence & Data Analytics System"
+    / "CaveKrave - Mine Intelligence & Data Analytics System"
+    / "CaveKrave - Mine Intelligence & Data Analytics System"
     / "MOIL_Intelligence_Platform"
 )
 OUT_DIR = WORKSPACE_ROOT / "data"

@@ -15,10 +15,10 @@ if ('serviceWorker' in navigator && import.meta.env.PROD) {
     navigator.serviceWorker
       .register('/sw.js')
       .then((reg) => {
-        console.log('[MIDAS] Offline Service Worker registered:', reg.scope);
+        console.log('[CaveKrave] Offline Service Worker registered:', reg.scope);
       })
       .catch((err) => {
-        console.log('[MIDAS] Service Worker registration ignored:', err);
+        console.log('[CaveKrave] Service Worker registration ignored:', err);
       });
   });
 }

@@ -48,7 +48,7 @@ export default function Topbar({
         </button>
 
         <div className="bg-white/[0.08] border border-white/[0.12] px-2.5 py-1 rounded-lg text-[12px] font-bold tracking-wider text-[#C0BDB8]">
-          MIDAS
+          CaveKrave
         </div>
         <div className="text-[13px] text-[#EFEFEF] font-semibold hidden sm:block">
           {t('common.subtitle')}

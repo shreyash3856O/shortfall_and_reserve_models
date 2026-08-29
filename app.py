@@ -1,4 +1,4 @@
-"""MIDAS — Mine Intelligence & Data Analytics System
+"""CaveKrave — Mine Intelligence & Data Analytics System
 FastAPI Backend & ML Serving Microservice for MOIL.
 
 Serves:
@@ -137,12 +137,12 @@ def init_state(app_inst: FastAPI):
 async def lifespan(app: FastAPI):
     LOGGER.info("Initializing MIDAS ML Serving Subsystem...")
     init_state(app)
-    LOGGER.info("MIDAS ML Serving ready.")
+    LOGGER.info("CaveKrave ML Serving ready.")
     yield
 
 
 app = FastAPI(
-    title="MIDAS — Mine Intelligence & Data Analytics System",
+    title="CaveKrave — Mine Intelligence & Data Analytics System",
     description=(
         "Production-grade ML & Decision-Support API for MOIL (Manganese Ore India Limited). "
         "Provides geological reserve block estimation (XGBoost + Kriging), production shortfall "
@@ -674,20 +674,20 @@ async def chat_interaction(payload: ChatRequest):
 
     # Default / General assistance
     else:
-        sources = ["MIDAS Platform Registry"]
+        sources = ["CaveKrave Platform Registry"]
         if lang == "hi":
             reply = (
-                "MIDAS संचालन प्रणाली में आपका स्वागत है। मैं खदान-वार मासिक शॉर्टफॉल जोखिम, SHAP मूल कारण, उपचारात्मक कार्रवाई, और भूवैज्ञानिक भंडार गणना पर लाइव डेटा प्रदान करता हूं।"
+                "CaveKrave संचालन प्रणाली में आपका स्वागत है। मैं खदान-वार मासिक शॉर्टफॉल जोखिम, SHAP मूल कारण, उपचारात्मक कार्रवाई, और भूवैज्ञानिक भंडार गणना पर लाइव डेटा प्रदान करता हूं।"
             )
             suggested = ["बालाघाट (MN01) का जोखिम क्या है?", "कुल भंडार सारांश दिखाएं", "मॉडल की सटीकता क्या है?"]
         elif lang == "mr":
             reply = (
-                "MIDAS ऑपरेशन्स सिस्टीममध्ये आपले स्वागत आहे. मी खाणनिहाय तुटवडा धोका, SHAP मूळ कारणे, सुधारात्मक कृती आणि भूगर्भीय साठा माहिती प्रदान करतो."
+                "CaveKrave ऑपरेशन्स सिस्टीममध्ये आपले स्वागत आहे. मी खाणनिहाय तुटवडा धोका, SHAP मूळ कारणे, सुधारात्मक कृती आणि भूगर्भीय साठा माहिती प्रदान करतो."
             )
             suggested = ["बालाघाट (MN01) चा धोका काय आहे?", "एकूण साठ्याचा सारांश दाखवा", "मॉडेलची अचूकता काय आहे?"]
         else:
             reply = (
-                "MIDAS Decision-Support System active. I provide real-time mine shortfall risk assessments, SHAP root-cause attributions, prescriptive rules, and geological reserve block estimates."
+                "CaveKrave Decision-Support System active. I provide real-time mine shortfall risk assessments, SHAP root-cause attributions, prescriptive rules, and geological reserve block estimates."
             )
             suggested = ["Why is Mine MN01 at risk this month?", "What is our total estimated tonnage in the high-grade zone?", "Show system data health status"]
 

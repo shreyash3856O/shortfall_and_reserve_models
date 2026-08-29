@@ -11,7 +11,7 @@ MIDAS hosts the two core production-grade machine learning models calibrated for
 ## 1. Project Structure
 
 ```
-MIDAS/
+CaveKrave/
 ├── artifacts/                           # Persisted model bundles, metrics & maps
 │   ├── shortfall_model.pkl              # Model 2: Trained XGBoost Shortfall Classifier
 │   ├── shap_explainer.pkl               # Model 2: SHAP TreeExplainer artifact
@@ -29,7 +29,7 @@ MIDAS/
 │   ├── moil_telemetry_daily.csv         # 36,530 daily mine telemetry observations (10 mines)
 │   └── moil_telemetry_monthly.csv       # 1,200 monthly aggregated mine operational cycles
 │
-├── midas/                               # Core Python package & feature engineering modules
+├── CaveKrave/                               # Core Python package & feature engineering modules
 │   ├── config.py                        # Paths, feature orders, units & thresholds
 │   ├── features.py                      # Monthly operational feature aggregation
 │   ├── rules.py                         # Prescriptive corrective action rules

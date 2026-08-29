@@ -8,10 +8,10 @@ export function registerServiceWorker() {
       navigator.serviceWorker
         .register('/sw.js')
         .then((reg) => {
-          console.log('[MIDAS SW] Registered with scope:', reg.scope);
+          console.log('[CaveKrave SW] Registered with scope:', reg.scope);
         })
         .catch((err) => {
-          console.error('[MIDAS SW] Registration failed:', err);
+          console.error('[CaveKrave SW] Registration failed:', err);
         });
     });
   }

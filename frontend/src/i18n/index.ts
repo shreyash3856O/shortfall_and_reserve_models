@@ -22,12 +22,12 @@ SUPPORTED_LANGUAGES.forEach((lang) => {
         ...ALL_TRANSLATIONS.en,
         common: {
           ...ALL_TRANSLATIONS.en.common,
-          systemName: 'MIDAS',
+          systemName: 'CaveKrave',
           subtitle: `${lang.name} • Mine Decision Support System`,
         },
         chat: {
           ...ALL_TRANSLATIONS.en.chat,
-          title: `MIDAS AI Assistant (${lang.name})`,
+          title: `CaveKrave AI Assistant (${lang.name})`,
         },
       },
     };
@@ -35,7 +35,7 @@ SUPPORTED_LANGUAGES.forEach((lang) => {
 });
 
 const initialLang =
-  (typeof localStorage !== 'undefined' && localStorage.getItem('midas_language')) ||
+  (typeof localStorage !== 'undefined' && localStorage.getItem('cavekrave_language')) ||
   DEFAULT_LANGUAGE;
 
 i18n
@@ -78,7 +78,7 @@ export async function switchLanguage(langCode: string): Promise<void> {
 
   // 3. Save to localStorage
   if (typeof localStorage !== 'undefined') {
-    localStorage.setItem('midas_language', langCode);
+    localStorage.setItem('cavekrave_language', langCode);
   }
 
   // 4. Trigger In-DOM translation + Google Website Translator across the entire viewport
@@ -87,7 +87,7 @@ export async function switchLanguage(langCode: string): Promise<void> {
   // 5. Emit custom event for active listeners & chatbot drawer
   if (typeof window !== 'undefined') {
     window.dispatchEvent(
-      new CustomEvent('midas_language_changed', { detail: { langCode } })
+      new CustomEvent('cavekrave_language_changed', { detail: { langCode } })
     );
   }
 }

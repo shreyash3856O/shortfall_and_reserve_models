@@ -96,7 +96,7 @@ export default function LandingPage({ onEnterDashboard }: LandingPageProps) {
       <header className="fixed top-0 left-0 right-0 h-16 border-b border-[#26262A]/70 px-6 lg:px-12 flex items-center justify-between bg-[#0D0D10]/80 backdrop-blur-md z-40">
         <div className="flex items-center gap-3">
           <div className="bg-[#202024] border border-[#303036] px-2.5 py-1 rounded text-[13px] font-bold text-[#C0BDB8]">
-            MIDAS
+            CaveKrave
           </div>
           <div className="text-[13px] text-[#888888] font-medium hidden sm:block">
             MOIL Limited &bull; Mine Intelligence System
@@ -129,7 +129,7 @@ export default function LandingPage({ onEnterDashboard }: LandingPageProps) {
               </h1>
 
               <p className="text-[15px] text-[#9A9A9A] leading-relaxed max-w-xl mx-auto">
-                MIDAS fuses borehole geological core assays, SCADA pit telemetry, and Sentinel-2 satellite imagery to eliminate production deficits and map subterranean manganese reserves with 92.1% accuracy.
+                CaveKrave fuses borehole geological core assays, SCADA pit telemetry, and Sentinel-2 satellite imagery to eliminate production deficits and map subterranean manganese reserves with 92.1% accuracy.
               </p>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 max-w-lg mx-auto">
@@ -244,7 +244,7 @@ export default function LandingPage({ onEnterDashboard }: LandingPageProps) {
               </h2>
 
               <p className="text-[14px] text-[#9A9A9A] leading-relaxed max-w-lg mx-auto">
-                MIDAS doesn't just alert managers to risks&mdash;it evaluates live rule triggers to recommend prioritized operational actions: deploying backup excavators, advancing blasting schedules, and reallocating haulage trucks.
+                CaveKrave doesn't just alert managers to risks&mdash;it evaluates live rule triggers to recommend prioritized operational actions: deploying backup excavators, advancing blasting schedules, and reallocating haulage trucks.
               </p>
 
               <div className="bg-[#0D0D10]/80 border border-[#24242A] p-4 rounded-2xl space-y-2 text-[12px] text-left max-w-lg mx-auto">
@@ -283,7 +283,7 @@ export default function LandingPage({ onEnterDashboard }: LandingPageProps) {
                   onClick={onEnterDashboard}
                   className="bg-[#24242A] hover:bg-[#303038] border border-[#3C3C46] text-white px-8 py-3.5 rounded-xl text-[14px] font-bold tracking-wide transition-all shadow-xl hover:scale-[1.02] flex items-center justify-center gap-2 mx-auto"
                 >
-                  <span>Launch MIDAS Workspace</span>
+                  <span>Launch CaveKrave Workspace</span>
                   <span>&rarr;</span>
                 </button>
               </div>
@@ -309,7 +309,7 @@ export default function LandingPage({ onEnterDashboard }: LandingPageProps) {
 
       {/* Footer */}
       <footer className="relative z-10 py-6 px-8 border-t border-[#1C1C20] bg-[#0D0D10] text-[11px] text-[#555555] flex flex-col sm:flex-row justify-between items-center gap-3">
-        <div>MIDAS Decision Core &bull; MOIL Limited</div>
+        <div>CaveKrave Decision Core &bull; MOIL Limited</div>
         <div>Data Sources: SCADA Ingest, Sentinel-2 Spectral Orbit, IBM Statutory Registry</div>
       </footer>
     </div>
