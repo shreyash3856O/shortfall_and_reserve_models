@@ -2,6 +2,7 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import { ALL_TRANSLATIONS } from './translations';
 import { SUPPORTED_LANGUAGES, isRTL, DEFAULT_LANGUAGE } from './languages';
+import { applyGoogleTranslate, initGoogleTranslate } from './googleTranslate';
 
 // Initialize i18next resources with all bundled translation dictionaries
 const resources: Record<string, { translation: any }> = {};
@@ -48,28 +49,44 @@ i18n
     },
   });
 
-// Apply initial RTL and language attributes on DOM
+// Apply initial RTL, language attributes, and Google Translate on load
 if (typeof document !== 'undefined') {
   document.documentElement.lang = initialLang;
   document.documentElement.dir = isRTL(initialLang) ? 'rtl' : 'ltr';
+
+  // Initialize Google Translate & apply saved language if not English
+  initGoogleTranslate();
+  if (initialLang !== 'en') {
+    setTimeout(() => {
+      applyGoogleTranslate(initialLang);
+    }, 500);
+  }
 }
 
 /**
- * Dynamically switches website language, updates DOM direction,
- * saves to localStorage, and notifies components.
+ * Dynamically switches website language, invokes Google Translator
+ * to translate the entire DOM (every element across vw/vh),
+ * updates DOM direction, saves to localStorage, and notifies components.
  */
 export async function switchLanguage(langCode: string): Promise<void> {
+  // 1. Change React i18n state
   await i18n.changeLanguage(langCode);
 
+  // 2. Set DOM attributes & RTL direction
   if (typeof document !== 'undefined') {
     document.documentElement.lang = langCode;
     document.documentElement.dir = isRTL(langCode) ? 'rtl' : 'ltr';
   }
 
+  // 3. Save to localStorage
   if (typeof localStorage !== 'undefined') {
     localStorage.setItem('midas_language', langCode);
   }
 
+  // 4. Trigger Google Website Translator to translate the entire DOM across the viewport
+  applyGoogleTranslate(langCode);
+
+  // 5. Emit custom event for active listeners & chatbot drawer
   if (typeof window !== 'undefined') {
     window.dispatchEvent(
       new CustomEvent('midas_language_changed', { detail: { langCode } })
