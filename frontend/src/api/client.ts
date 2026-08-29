@@ -129,6 +129,10 @@ export interface ChatResponse {
   suggested_queries: string[];
 }
 
+// In production (Render/Vercel), VITE_API_BASE_URL points to deployed backend.
+// In local dev, it's empty and Vite's proxy handles routing.
+const BASE_URL = (import.meta as any).env?.VITE_API_BASE_URL || '';
+
 const CACHE_KEY_PREFIX = 'cavekrave_cache_';
 const SYNC_KEY = 'cavekrave_last_sync_timestamp';
 
@@ -184,7 +188,7 @@ export async function fetchWithCache<T>(
 ): Promise<{ data: T; isCached: boolean }> {
   const key = cacheKey || endpoint;
   try {
-    const res = await fetch(endpoint);
+    const res = await fetch(BASE_URL + endpoint);
     if (!res.ok) {
       throw new Error(`HTTP ${res.status}: ${res.statusText}`);
     }
@@ -242,7 +246,7 @@ export const api = {
 
   predictReservePoint: async (payload: ReservePredictInput): Promise<ReservePredictResponse> => {
     try {
-      const res = await fetch('/reserve/predict', {
+      const res = await fetch(BASE_URL + '/reserve/predict', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
@@ -359,7 +363,7 @@ export const api = {
 
   sendChatMessage: async (message: string, language = 'en'): Promise<ChatResponse> => {
     try {
-      const res = await fetch('/chat', {
+      const res = await fetch(BASE_URL + '/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message, language }),
